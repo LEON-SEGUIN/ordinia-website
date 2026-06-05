@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ordinia — Systèmes Agentiques</title>
+  <meta name="description" content="Ordinia conçoit des systèmes agentiques sur mesure — agents IA et automatisations qui transforment vos workflows." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Syne', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            body:  ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* ── Brand tokens ─────────────────────────────────── */
+    :root {
+      --bg:       #050505;
+      --surface:  #0e0e0e;
+      --surface2: #141414;
+      --border:   #1e1e1e;
+      --text:     #f0ede8;
+      --muted:    #7a7a7a;
+      --accent:   #d4cfc8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Starfield ───────────────────────────────────── */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #ffffff;
+      animation: twinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--min-op, 0.04); transform: scale(1); }
+      50%       { opacity: var(--max-op, 0.28); transform: scale(1.3); }
+    }
+
+    /* ── Grain overlay ───────────────────────────────── */
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.038;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+    }
+
+    /* ── Animated rings (hero bg) ────────────────────── */
+    @keyframes spin-cw  { to { transform: rotate(360deg);  } }
+    @keyframes spin-ccw { to { transform: rotate(-360deg); } }
+    @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+    @keyframes glow-blink { 0%,100%{opacity:.25} 50%{opacity:.55} }
+    @keyframes grad-drift {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(3%,-3%) scale(1.06); }
+      66%  { transform: translate(-2%,3%) scale(.96); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+
+    .ring-cw  { transform-origin: 50% 50%; animation: spin-cw  32s linear infinite; }
+    .ring-ccw { transform-origin: 50% 50%; animation: spin-ccw 26s linear infinite; }
+    .rings-float { animation: float 7s ease-in-out infinite; }
+    .dot-glow { animation: glow-blink 4s ease-in-out infinite; }
+    .grad1 { animation: grad-drift 22s ease-in-out infinite; }
+    .grad2 { animation: grad-drift 28s ease-in-out infinite reverse; }
+    .grad3 { animation: grad-drift 34s ease-in-out infinite 6s; }
+
+    /* ── Typography helpers ──────────────────────────── */
+    .h-display {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.12;
+    }
+    .h-section {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+    }
+    .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--text); color: var(--bg);
+      font-family: 'Syne', sans-serif; font-weight: 600;
+      font-size: 15px; letter-spacing: -0.01em;
+      padding: 14px 28px; border-radius: 7px;
+      border: 1px solid var(--text);
+      text-decoration: none; cursor: pointer;
+      position: relative; overflow: hidden;
+      white-space: nowrap;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.18s ease;
+    }
+    .btn-primary:hover::after { background: rgba(0,0,0,0.09); }
+    .btn-primary:active { transform: scale(0.975); }
+    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text);
+      font-family: 'Syne', sans-serif; font-weight: 500;
+      font-size: 15px; letter-spacing: -0.01em;
+      padding: 14px 28px; border-radius: 7px;
+      border: 1px solid var(--border);
+      text-decoration: none; cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.2s ease;
+    }
+    .btn-ghost:hover  { border-color: var(--muted); }
+    .btn-ghost:active { transform: scale(0.975); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ── Nav link ────────────────────────────────────── */
+    .nav-link {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+      letter-spacing: 0.005em;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.22s ease;
+    }
+    .nav-link:hover { color: var(--text); }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+
+    /* ── Service card ────────────────────────────────── */
+    .svc-card {
+      background: var(--surface);
+      padding: 40px;
+      position: relative;
+      cursor: default;
+    }
+    .svc-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(212,207,200,.1) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .svc-card:hover::before { opacity: 1; }
+
+    .icon-wrap {
+      width: 48px; height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .check-list li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Why card ────────────────────────────────────── */
+    .why-card {
+      background: var(--surface);
+      padding: 36px;
+    }
+
+    /* ── Line-reveal helpers ─────────────────────────── */
+    .overflow-clip { display: inline-block; overflow: hidden; vertical-align: bottom; }
+    .reveal-line   { display: inline-block; transform: translateY(115%); }
+
+    /* ── Custom cursor (desktop only) ───────────────── */
+    @media (pointer: fine) {
+      body, a, button, [role="button"], .svc-card, .why-card { cursor: none !important; }
+
+      #cursor-dot {
+        position: fixed; top: 0; left: 0;
+        width: 6px; height: 6px;
+        background: var(--text);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+        transition: opacity 0.2s ease;
+      }
+      #cursor-orb {
+        position: fixed; top: 0; left: 0;
+        width: 50px; height: 50px;
+        border: 1px solid rgba(212,207,200,0.28);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 14px 2px rgba(212,207,200,0.06),
+                    inset 0 0 10px rgba(212,207,200,0.04);
+        transition: width 0.22s ease, height 0.22s ease,
+                    border-color 0.22s ease, box-shadow 0.22s ease,
+                    opacity 0.2s ease;
+      }
+      body.cursor-hover #cursor-orb {
+        width: 76px; height: 76px;
+        border-color: rgba(212,207,200,0.52);
+        box-shadow: 0 0 26px 5px rgba(212,207,200,0.14),
+                    inset 0 0 14px rgba(212,207,200,0.08);
+      }
+      body.cursor-hover #cursor-dot {
+        opacity: 0.3;
+      }
+    }
+    @media (pointer: coarse) {
+      #cursor-dot, #cursor-orb { display: none; }
+    }
+
+    /* ── Scrollbar ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* ── Motion init states ──────────────────────────── */
+    .will-reveal { opacity: 0; }
+
+    /* ── Reduced motion overrides ────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .ring-cw, .ring-ccw, .rings-float,
+      .dot-glow, .grad1, .grad2, .grad3 { animation: none !important; }
+      .will-reveal { opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ── Sticky scroll — Process ────────────────────── */
+    .proc-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .proc-card-wrap {
+      position: relative;
+      height: 340px;
+    }
+
+    /* Mobile: disable sticky, stack everything */
+    @media (max-width: 767px) {
+      #process { height: auto !important; }
+      #proc-sticky {
+        position: static !important;
+        height: auto !important;
+        padding: 80px 24px !important;
+        align-items: flex-start !important;
+      }
+      .proc-col-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .proc-card-wrap { position: static !important; height: auto !important; display: flex; flex-direction: column; gap: 12px; }
+      .proc-card { position: static !important; opacity: 1 !important; transform: none !important; }
+      #proc-label, #proc-h2 { opacity: 1 !important; transform: none !important; }
+      #proc-bar-wrap { display: none !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #process { height: auto !important; }
+      #proc-sticky { position: static !important; height: auto !important; padding: 80px 32px !important; }
+      .proc-card-wrap { position: static !important; height: auto !important; display: flex; flex-direction: column; gap: 12px; }
+      .proc-card { position: static !important; opacity: 1 !important; transform: none !important; }
+      #proc-label, #proc-h2 { opacity: 1 !important; transform: none !important; }
+      #proc-bar-wrap { display: none !important; }
+    }
+
+    /* ── Mobile nav ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none !important; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      .stat-grid { grid-template-columns: 1fr !important; }
+      .stat-item + .stat-item { border-top: 1px solid var(--border) !important; border-right: none !important; }
+    }
+    @media (max-width: 640px) {
+      .svc-card, .why-card { padding: 28px; }
+    }
+
+    /* ═══════════════════════════════════════════════
+       MOBILE — ≤ 767px
+       All rules scoped here so desktop is untouched
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 767px) {
+      /* Navbar */
+      #navbar { padding: 0 20px !important; }
+      #navbar > a img { height: 80px !important; transform: scale(1) !important; transform-origin: left center !important; }
+      #nav-cta-desktop { display: none !important; }
+      #nav-burger { display: flex !important; }
+
+      /* Mobile menu overlay */
+      #mobile-menu { display: none; }
+      #mobile-menu.open { display: flex !important; }
+
+      /* Hero */
+      #hero-section { padding: 96px 20px 64px !important; }
+      .rings-float { width: min(86vw, 300px) !important; opacity: 0.12 !important; }
+      #hero-h1 { font-size: clamp(1.55rem, 6.5vw, 2.2rem) !important; max-width: 100% !important; }
+      #hero-h1 .overflow-clip { white-space: normal !important; }
+      #hero-h1 .reveal-line { white-space: normal !important; }
+      #hero-sub { max-width: 100% !important; font-size: 0.95rem !important; margin-bottom: 36px !important; }
+      .hero-ctas { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+      .hero-ctas a { justify-content: center !important; width: 100% !important; box-sizing: border-box !important; text-align: center !important; }
+
+      /* Stats */
+      .stat-item { padding: 28px 20px !important; }
+
+      /* Services */
+      #services { padding: 72px 20px !important; }
+      #svc-grid { grid-template-columns: 1fr !important; }
+      .svc-card { padding: 28px 24px !important; }
+
+      /* Process */
+      #proc-sticky { padding: 64px 20px !important; }
+      .proc-card { padding: 28px 24px !important; }
+
+      /* Why Ordinia */
+      #pourquoi { padding: 72px 20px !important; }
+      #why-grid { grid-template-columns: 1fr !important; }
+      .why-card { padding: 28px 24px !important; }
+
+      /* CTA */
+      #contact { padding: 72px 20px !important; }
+      #cta-block h2 { font-size: clamp(1.7rem, 7.5vw, 2.6rem) !important; }
+      #cta-block .btn-primary {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      /* Footer */
+      footer { padding: 40px 20px !important; }
+      footer > div {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 20px !important;
+      }
+      footer > div > img { height: 52px !important; }
+      footer nav { flex-wrap: wrap !important; justify-content: center !important; gap: 14px 20px !important; }
+
+      /* Section headings */
+      .h-section { font-size: clamp(1.6rem, 7vw, 2.4rem) !important; }
+    }
+
+    /* Hamburger button — hidden on desktop */
+    #nav-burger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--fg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      z-index: 51;
+      position: relative;
+    }
+    #nav-burger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: currentColor;
+      border-radius: 2px;
+      transition: opacity 0.2s, transform 0.25s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Starfield -->
+  <div id="starfield" aria-hidden="true"></div>
+
+  <!-- Global atmospheric background (fixed, visible on all sections) -->
+  <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden">
+    <div class="grad1" style="position:absolute;top:-30%;left:-15%;width:70%;height:80%;
+         background:radial-gradient(ellipse,rgba(212,207,200,.14) 0%,transparent 60%);border-radius:50%"></div>
+    <div class="grad2" style="position:absolute;bottom:-25%;right:-10%;width:65%;height:65%;
+         background:radial-gradient(ellipse,rgba(212,207,200,.10) 0%,transparent 60%);border-radius:50%"></div>
+    <div class="grad3" style="position:absolute;top:35%;left:38%;width:45%;height:55%;
+         background:radial-gradient(ellipse,rgba(255,255,255,.055) 0%,transparent 60%);border-radius:50%"></div>
+    <div class="grad1" style="position:absolute;bottom:-20%;left:-5%;width:40%;height:50%;
+         background:radial-gradient(ellipse,rgba(212,207,200,.07) 0%,transparent 60%);border-radius:50%;animation-delay:-11s"></div>
+    <div class="dot-glow" style="position:absolute;top:22%;left:14%;width:4px;height:4px;
+         background:var(--accent);border-radius:50%;box-shadow:0 0 20px 8px rgba(212,207,200,.55)"></div>
+    <div class="dot-glow" style="position:absolute;top:68%;left:22%;width:3px;height:3px;
+         background:var(--accent);border-radius:50%;box-shadow:0 0 18px 6px rgba(212,207,200,.45);animation-delay:1.8s"></div>
+    <div class="dot-glow" style="position:absolute;top:38%;right:18%;width:3px;height:3px;
+         background:var(--accent);border-radius:50%;box-shadow:0 0 18px 6px rgba(212,207,200,.42);animation-delay:3.2s"></div>
+    <div class="dot-glow" style="position:absolute;top:55%;left:38%;width:2px;height:2px;
+         background:var(--accent);border-radius:50%;box-shadow:0 0 14px 5px rgba(212,207,200,.35);animation-delay:2.4s"></div>
+    <div class="dot-glow" style="position:absolute;top:15%;right:30%;width:2px;height:2px;
+         background:var(--accent);border-radius:50%;box-shadow:0 0 14px 5px rgba(212,207,200,.32);animation-delay:0.9s"></div>
+  </div>
+
+  <!-- Grain -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Custom cursor -->
+  <div id="cursor-orb" aria-hidden="true"></div>
+  <div id="cursor-dot" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════ NAVBAR ══════════════════════════ -->
+  <nav id="navbar"
+    style="position:fixed;top:0;left:0;right:0;z-index:50;
+           padding:2px 32px;
+           display:flex;align-items:center;justify-content:space-between;
+           background:rgba(5,5,5,0.55);
+           backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+           border-bottom:1px solid transparent;
+           opacity:0;transform:translateY(-16px)">
+
+    <a href="#" style="display:flex;align-items:center" aria-label="Ordinia — Accueil">
+      <img src="brand_assets/Ordinia%20LOGO.png"
+           alt="Ordinia"
+           style="height:64px;width:auto;transform:scale(1.45);transform-origin:left center" />
+    </a>
+
+    <div class="nav-links" style="display:flex;align-items:center;gap:36px">
+      <a href="#services"  class="nav-link">Services</a>
+      <a href="#process"   class="nav-link">Comment ça marche</a>
+      <a href="#pourquoi"  class="nav-link">Pourquoi Ordinia</a>
+    </div>
+
+    <a id="nav-cta-desktop" href="#contact" class="btn-primary" style="font-size:13px;padding:10px 22px">
+      Prendre contact
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <path d="M2 6.5h9M6.5 2l4.5 4.5L6.5 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <button id="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation mobile"
+       style="display:none;position:fixed;inset:0;z-index:49;
+              background:rgba(5,5,5,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+              flex-direction:column;align-items:center;justify-content:center;gap:36px;
+              padding:80px 24px 48px">
+    <a href="#services"  class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Services</a>
+    <a href="#process"   class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Comment ça marche</a>
+    <a href="#pourquoi"  class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Pourquoi Ordinia</a>
+    <a href="#contact" class="btn-primary" onclick="closeMobileMenu()"
+       style="font-size:15px;padding:14px 32px;margin-top:16px;justify-content:center;width:100%;max-width:280px;box-sizing:border-box">
+      Prendre contact
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <path d="M2 6.5h9M6.5 2l4.5 4.5L6.5 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <section id="hero-section" style="min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;padding:120px 32px 80px">
+
+    <!-- Oversized rings (hero only) -->
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden" aria-hidden="true">
+      <div class="rings-float" style="position:absolute;right:2%;top:48%;transform:translateY(-50%);
+           width:min(55vw,640px);height:min(55vw,640px);opacity:0.22;
+           filter:drop-shadow(0 0 28px rgba(212,207,200,0.4))">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+             width="100%" height="100%" aria-hidden="true">
+          <g class="ring-cw"  style="transform-origin:100px 100px">
+            <circle cx="82" cy="100" r="58" stroke="white" stroke-width="3.5"/>
+          </g>
+          <g class="ring-ccw" style="transform-origin:100px 100px">
+            <circle cx="118" cy="100" r="58" stroke="white" stroke-width="3.5"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Hero content -->
+    <div style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1">
+
+      <p class="label will-reveal" id="hero-label" style="margin-bottom:28px">
+        Systèmes Agentiques
+      </p>
+
+      <h1 class="h-display" id="hero-h1"
+          style="font-size:clamp(2rem,4.2vw,5rem);margin-bottom:28px;max-width:900px">
+        <span class="overflow-clip" style="white-space:nowrap"><span class="reveal-line">Moins de contraintes.</span></span><br/>
+        <span class="overflow-clip" style="white-space:nowrap"><span class="reveal-line">Plus de croissance.</span></span><br/>
+        <span class="overflow-clip" style="white-space:nowrap"><span class="reveal-line" style="color:var(--accent)">Automatisez. Accélérez.</span></span>
+      </h1>
+
+      <p class="will-reveal" id="hero-sub"
+         style="font-size:clamp(1rem,1.8vw,1.15rem);color:var(--muted);
+                max-width:560px;line-height:1.8;margin-bottom:52px">
+        Ordinia conçoit des systèmes d'automatisation qui libèrent vos
+        équipes des tâches répétitives et amplifient votre productivité.
+      </p>
+
+      <div class="hero-ctas will-reveal" id="hero-ctas"
+           style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="#services" class="btn-primary">
+          Découvrir nos services
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M2.5 7.5h10M7.5 2.5l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#contact" class="btn-ghost">Prendre RDV</a>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div id="scroll-cue" style="position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+         display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0">
+      <span class="label">Défiler</span>
+      <div style="width:1px;height:36px;background:linear-gradient(to bottom,var(--muted),transparent)"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ STATS ══════════════════════════ -->
+  <section style="padding:0 32px;position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto;
+         border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+
+      <div class="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr)">
+
+        <div class="stat-item will-reveal" style="text-align:center;padding:52px 24px;border-right:1px solid var(--border)">
+          <div class="stat-num" id="s0" data-val="17" data-sfx="+"
+               style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
+          <p class="label" style="margin-top:10px">clients accompagnés</p>
+        </div>
+
+        <div class="stat-item will-reveal" style="text-align:center;padding:52px 24px;border-right:1px solid var(--border)">
+          <div class="stat-num" id="s1" data-val="42" data-sfx="+"
+               style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
+          <p class="label" style="margin-top:10px">automatisations déployées</p>
+        </div>
+
+        <div class="stat-item will-reveal" style="text-align:center;padding:52px 24px">
+          <div class="stat-num" id="s2" data-val="35" data-sfx="%"
+               style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
+          <p class="label" style="margin-top:10px">de temps libéré en moyenne</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ SERVICES ══════════════════════════ -->
+  <section id="services" style="padding:128px 32px;position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto">
+
+      <div style="margin-bottom:72px">
+        <p class="label will-reveal" style="margin-bottom:18px">01 — Nos services</p>
+        <h2 class="h-section will-reveal"
+            style="font-size:clamp(2rem,4vw,3.4rem);max-width:580px">
+          Des solutions IA pensées pour votre réalité.
+        </h2>
+      </div>
+
+      <div id="svc-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+           gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+
+        <!-- Card 1 -->
+        <div class="svc-card will-reveal">
+          <div class="icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+                 stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="9"/>
+              <path d="M11 6v5l3.5 2"/>
+            </svg>
+          </div>
+          <h3 class="font-heading" style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:14px">
+            Accompagnement Stratégique IA
+          </h3>
+          <p style="color:var(--muted);font-size:14.5px;line-height:1.82;margin-bottom:28px">
+            Audit de votre activité, identification des leviers IA à fort impact,
+            construction d'une roadmap sur mesure. De la stratégie à l'exécution.
+          </p>
+          <ul class="check-list">
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Audit &amp; cartographie des processus
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Identification des gains IA à fort ROI
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Roadmap priorisée
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="svc-card will-reveal">
+          <div class="icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+                 stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M2 11h3l2.5 7.5L12 3l3.5 12L18 11h2"/>
+            </svg>
+          </div>
+          <h3 class="font-heading" style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:14px">
+            Automatisation Sur Mesure
+          </h3>
+          <p style="color:var(--muted);font-size:14.5px;line-height:1.82;margin-bottom:28px">
+            Conception et développement de workflows intelligents et d'intégrations
+            adaptés précisément à vos processus métier.
+          </p>
+          <ul class="check-list">
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Automatisations no-code &amp; pro-code
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Intégrations API &amp; outils existants
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Agents IA pour vos cas d'usage
+            </li>
+          </ul>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="svc-card will-reveal">
+          <div class="icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"
+                 stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 17l4.5-4.5 4 4L19 5"/>
+              <path d="M14 5h5v5"/>
+            </svg>
+          </div>
+          <h3 class="font-heading" style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em;margin-bottom:14px">
+            Pilotage &amp; Résultats
+          </h3>
+          <p style="color:var(--muted);font-size:14.5px;line-height:1.82;margin-bottom:28px">
+            Vous gardez la main sur vos systèmes. Nous assurons la performance
+            et l'évolution continue de vos automatisations.
+          </p>
+          <ul class="check-list">
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Monitoring &amp; alertes en temps réel
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Dashboards de performance
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Support &amp; optimisation continue
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ PROCESS (Sticky Scroll) ══════════════════════════ -->
+  <section id="process" style="position:relative;height:380vh;border-top:1px solid var(--border)">
+
+    <div id="proc-sticky"
+         style="position:sticky;top:0;height:100vh;overflow:hidden;
+                display:flex;align-items:center;padding:0 32px">
+
+      <!-- Ambient orb -->
+      <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden" aria-hidden="true">
+        <div style="position:absolute;top:15%;right:5%;width:40%;aspect-ratio:1;
+             background:radial-gradient(ellipse,rgba(212,207,200,.05) 0%,transparent 60%);
+             border-radius:50%"></div>
+      </div>
+
+      <div class="proc-col-grid">
+
+        <!-- LEFT: heading + step tabs ─────────────── -->
+        <div>
+          <p class="label" id="proc-label"
+             style="margin-bottom:18px;opacity:0;transform:translateY(12px)">
+            02 — Comment ça marche
+          </p>
+          <h2 class="h-section" id="proc-h2"
+              style="font-size:clamp(1.85rem,3.5vw,3rem);max-width:400px;
+                     margin-bottom:52px;opacity:0;transform:translateY(28px)">
+            De l'idée au<br/>déploiement,<br/>en 3 étapes claires.
+          </h2>
+
+          <div id="proc-tabs" role="list">
+
+            <div class="proc-tab" data-step="0" role="listitem"
+                 style="display:flex;align-items:center;gap:14px;padding:17px 0;
+                        border-top:1px solid var(--border);position:relative;overflow:hidden">
+              <span class="ptnum"
+                    style="font-family:'JetBrains Mono',monospace;font-size:10px;
+                           letter-spacing:.16em;text-transform:uppercase;
+                           color:var(--muted);min-width:20px">01</span>
+              <span class="ptlabel"
+                    style="font-family:'Syne',sans-serif;font-weight:700;
+                           font-size:.95rem;letter-spacing:-.01em;color:var(--muted)">
+                Cadrage &amp; Écoute
+              </span>
+              <div class="ptfill"
+                   style="position:absolute;bottom:0;left:0;width:0%;height:1px;
+                          background:var(--accent);transition:width .45s ease"></div>
+            </div>
+
+            <div class="proc-tab" data-step="1" role="listitem"
+                 style="display:flex;align-items:center;gap:14px;padding:17px 0;
+                        border-top:1px solid var(--border);position:relative;overflow:hidden">
+              <span class="ptnum"
+                    style="font-family:'JetBrains Mono',monospace;font-size:10px;
+                           letter-spacing:.16em;text-transform:uppercase;
+                           color:var(--muted);min-width:20px">02</span>
+              <span class="ptlabel"
+                    style="font-family:'Syne',sans-serif;font-weight:700;
+                           font-size:.95rem;letter-spacing:-.01em;color:var(--muted)">
+                Construction &amp; Itération
+              </span>
+              <div class="ptfill"
+                   style="position:absolute;bottom:0;left:0;width:0%;height:1px;
+                          background:var(--accent);transition:width .45s ease"></div>
+            </div>
+
+            <div class="proc-tab" data-step="2" role="listitem"
+                 style="display:flex;align-items:center;gap:14px;padding:17px 0;
+                        border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+                        position:relative;overflow:hidden">
+              <span class="ptnum"
+                    style="font-family:'JetBrains Mono',monospace;font-size:10px;
+                           letter-spacing:.16em;text-transform:uppercase;
+                           color:var(--muted);min-width:20px">03</span>
+              <span class="ptlabel"
+                    style="font-family:'Syne',sans-serif;font-weight:700;
+                           font-size:.95rem;letter-spacing:-.01em;color:var(--muted)">
+                Lancement &amp; Autonomie
+              </span>
+              <div class="ptfill"
+                   style="position:absolute;bottom:0;left:0;width:0%;height:1px;
+                          background:var(--accent);transition:width .45s ease"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RIGHT: step cards ─────────────────────── -->
+        <div class="proc-card-wrap">
+
+          <div class="proc-card" data-step="0"
+               style="position:absolute;inset:0;border-radius:16px;padding:44px 40px;
+                      background:var(--surface);border:1px solid var(--border);
+                      opacity:0;transform:translateY(52px) scale(0.96)">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
+                 color:rgba(212,207,200,.18);line-height:1;margin-bottom:28px;user-select:none"
+                 aria-hidden="true">01</div>
+            <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;
+                 letter-spacing:-.02em;margin-bottom:14px">Cadrage &amp; Écoute</h3>
+            <p style="color:var(--muted);font-size:14.5px;line-height:1.82">
+              On cartographie vos processus, on identifie les tâches chronophages
+              et on vous soumet un plan d'action priorisé par impact.
+            </p>
+            <div style="position:absolute;top:0;left:40px;right:40px;height:1px;
+                 background:linear-gradient(90deg,transparent,rgba(212,207,200,.2),transparent)"
+                 aria-hidden="true"></div>
+          </div>
+
+          <div class="proc-card" data-step="1"
+               style="position:absolute;inset:0;border-radius:16px;padding:44px 40px;
+                      background:var(--surface2);border:1px solid var(--border);
+                      opacity:0;transform:translateY(52px) scale(0.96)">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
+                 color:rgba(212,207,200,.18);line-height:1;margin-bottom:28px;user-select:none"
+                 aria-hidden="true">02</div>
+            <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;
+                 letter-spacing:-.02em;margin-bottom:14px">Construction &amp; Itération</h3>
+            <p style="color:var(--muted);font-size:14.5px;line-height:1.82">
+              Nos experts développent vos automatisations en sprints courts.
+              Vous validez à chaque étape — pas de surprise en fin de parcours.
+            </p>
+            <div style="position:absolute;top:0;left:40px;right:40px;height:1px;
+                 background:linear-gradient(90deg,transparent,rgba(212,207,200,.2),transparent)"
+                 aria-hidden="true"></div>
+          </div>
+
+          <div class="proc-card" data-step="2"
+               style="position:absolute;inset:0;border-radius:16px;padding:44px 40px;
+                      background:var(--surface);border:1px solid var(--border);
+                      opacity:0;transform:translateY(52px) scale(0.96)">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
+                 color:rgba(212,207,200,.18);line-height:1;margin-bottom:28px;user-select:none"
+                 aria-hidden="true">03</div>
+            <h3 style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;
+                 letter-spacing:-.02em;margin-bottom:14px">Lancement &amp; Autonomie</h3>
+            <p style="color:var(--muted);font-size:14.5px;line-height:1.82">
+              On met en production, on forme vos équipes et on reste disponibles
+              pour piloter les résultats dans la durée.
+            </p>
+            <div style="position:absolute;top:0;left:40px;right:40px;height:1px;
+                 background:linear-gradient(90deg,transparent,rgba(212,207,200,.2),transparent)"
+                 aria-hidden="true"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom progress bar -->
+      <div id="proc-bar-wrap"
+           style="position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border)">
+        <div id="proc-bar"
+             style="height:100%;width:0%;background:var(--accent);
+                    box-shadow:0 0 10px rgba(212,207,200,.25)"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ WHY ORDINIA ══════════════════════════ -->
+  <section id="pourquoi" style="padding:128px 32px;border-top:1px solid var(--border);position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto">
+
+      <div style="margin-bottom:80px">
+        <p class="label will-reveal" style="margin-bottom:18px">03 — Pourquoi Ordinia</p>
+        <h2 class="h-section will-reveal"
+            style="font-size:clamp(2rem,4vw,3.4rem);max-width:600px">
+          L'intelligence au service de votre business, pas l'inverse.
+        </h2>
+      </div>
+
+      <div id="why-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+           gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+
+        <div class="why-card will-reveal">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+               stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"
+               style="margin-bottom:22px;display:block" aria-hidden="true">
+            <path d="M13 2l2.4 7.6H23l-6.6 4.8 2.4 7.6L13 17.5l-5.8 4.5 2.4-7.6L3 9.6h7.6L13 2z"/>
+          </svg>
+          <h3 class="font-heading" style="font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:12px">Sur mesure, toujours</h3>
+          <p style="color:var(--muted);font-size:14px;line-height:1.82">
+            Pas de solution générique. Chaque système est pensé et construit pour votre contexte spécifique.
+          </p>
+        </div>
+
+        <div class="why-card will-reveal">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+               stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"
+               style="margin-bottom:22px;display:block" aria-hidden="true">
+            <circle cx="13" cy="13" r="10"/>
+            <path d="M13 7v6l4 2"/>
+          </svg>
+          <h3 class="font-heading" style="font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:12px">Livraison rapide</h3>
+          <p style="color:var(--muted);font-size:14px;line-height:1.82">
+            Des cycles courts, des itérations rapides. Vos premiers résultats en semaines, pas en mois.
+          </p>
+        </div>
+
+        <div class="why-card will-reveal">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+               stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"
+               style="margin-bottom:22px;display:block" aria-hidden="true">
+            <path d="M13 3C7 3 3 8 3 13s5 10 10 10 10-5 10-10"/>
+            <path d="M18 3l5 5-5 5"/>
+          </svg>
+          <h3 class="font-heading" style="font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:12px">Accompagnement humain</h3>
+          <p style="color:var(--muted);font-size:14px;line-height:1.82">
+            Un interlocuteur dédié qui comprend votre métier autant que la technologie.
+          </p>
+        </div>
+
+        <div class="why-card will-reveal">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+               stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"
+               style="margin-bottom:22px;display:block" aria-hidden="true">
+            <path d="M3 18l5.5-5.5 4 4 6-8 4.5 4"/>
+          </svg>
+          <h3 class="font-heading" style="font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:12px">ROI mesurable</h3>
+          <p style="color:var(--muted);font-size:14px;line-height:1.82">
+            On définit des métriques concrètes avant de commencer. Vous savez exactement ce que vous obtenez.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CTA ══════════════════════════ -->
+  <section id="contact" style="padding:128px 32px;border-top:1px solid var(--border);
+       position:relative;z-index:1;overflow:hidden">
+
+    <div style="position:absolute;inset:0;pointer-events:none" aria-hidden="true">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+           width:70%;max-width:900px;aspect-ratio:2/1;
+           background:radial-gradient(ellipse,rgba(212,207,200,.055) 0%,transparent 65%);
+           border-radius:50%"></div>
+    </div>
+
+    <div id="cta-block" style="max-width:700px;margin:0 auto;text-align:center;
+         position:relative;z-index:1;opacity:0;transform:scale(0.96) translateY(30px)">
+
+      <p class="label" style="margin-bottom:24px">04 — Passons à l'action</p>
+
+      <h2 class="h-section"
+          style="font-size:clamp(2rem,4.5vw,3.8rem);margin-bottom:24px">
+        Prêt à transformer<br/>votre business avec l'IA&nbsp;?
+      </h2>
+
+      <p style="color:var(--muted);font-size:1.05rem;line-height:1.82;
+                max-width:480px;margin:0 auto 52px">
+        Réservez un appel découverte de 30 minutes. Gratuit, sans engagement —
+        on vous dit honnêtement ce que l'IA peut faire pour vous.
+      </p>
+
+      <a href="mailto:contact@ordinia.fr" class="btn-primary" style="font-size:16px;padding:16px 40px">
+        Réserver un appel découverte
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer style="padding:44px 32px;border-top:1px solid var(--border);position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto;
+         display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+
+      <img src="brand_assets/Ordinia%20LOGO.png"
+           alt="Ordinia"
+           style="height:88px;width:auto;opacity:0.75" />
+
+      <nav style="display:flex;gap:28px" aria-label="Navigation footer">
+        <a href="#services" class="nav-link" style="font-size:13px">Services</a>
+        <a href="#contact"  class="nav-link" style="font-size:13px">Contact</a>
+        <a href="#"         class="nav-link" style="font-size:13px">Mentions légales</a>
+      </nav>
+
+      <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
+        © 2025 Ordinia. Tous droits réservés.
+      </p>
+
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════ STARFIELD ══════════════════════════ -->
+  <script>
+    (function() {
+      var sf = document.getElementById('starfield')
+      if (!sf) return
+      var frag = document.createDocumentFragment()
+      for (var i = 0; i < 180; i++) {
+        var s = document.createElement('div')
+        s.className = 'star'
+        var size = (Math.random() * 1.6 + 0.5).toFixed(1)
+        var minOp = (Math.random() * 0.06 + 0.04).toFixed(2)
+        var maxOp = (Math.random() * 0.4  + 0.22).toFixed(2)
+        var dur   = (Math.random() * 6 + 3).toFixed(1)
+        var delay = '-' + (Math.random() * 10).toFixed(1)
+        s.style.left   = (Math.random() * 100).toFixed(2) + '%'
+        s.style.top    = (Math.random() * 100).toFixed(2) + '%'
+        s.style.width  = size + 'px'
+        s.style.height = size + 'px'
+        s.style.setProperty('--min-op', minOp)
+        s.style.setProperty('--max-op', maxOp)
+        s.style.setProperty('--dur',    dur + 's')
+        s.style.setProperty('--delay',  delay + 's')
+        frag.appendChild(s)
+      }
+      sf.appendChild(frag)
+    })()
+  </script>
+
+  <!-- ══════════════════════════ MOTION ANIMATIONS ══════════════════════════ -->
+  <script>
+    /* Failsafe: si le module motion ne charge pas en 5s, tout révéler */
+    var _revealFallback = setTimeout(function() {
+      document.querySelectorAll('.will-reveal').forEach(function(el) {
+        el.style.opacity = '1'; el.style.transform = 'none'
+      })
+      document.querySelectorAll('.reveal-line').forEach(function(el) {
+        el.style.transform = 'none'
+      })
+      var nb = document.getElementById('navbar')
+      if (nb) { nb.style.opacity = '1'; nb.style.transform = 'none' }
+      var cta = document.getElementById('cta-block')
+      if (cta) { cta.style.opacity = '1'; cta.style.transform = 'none' }
+    }, 5000)
+  </script>
+  <script type="module">
+    import { animate, inView, stagger } from 'https://esm.sh/motion@10.18.0'
+
+    clearTimeout(window._revealFallback)
+    const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+
+    /* ── Easings ─────────────────────────────────── */
+    const OUT     = [0.0,  0.0, 0.2, 1.0]          /* standard decelerate */
+    const PREMIUM = [0.16, 1.0, 0.3, 1.0]           /* fast-settle — Awwwards/Lusion signature */
+    const SPRING  = [0.34, 1.4, 0.64, 1.0]          /* slight overshoot */
+
+    /* ── Navbar ──────────────────────────────────── */
+    animate('#navbar',
+      { opacity: [0, 1], y: [-20, 0] },
+      { duration: 0.7, easing: OUT, delay: 0.2 }
+    )
+    const navbar = document.getElementById('navbar')
+    window.addEventListener('scroll', () => {
+      navbar.style.borderBottomColor = window.scrollY > 50 ? 'var(--border)' : 'transparent'
+    }, { passive: true })
+
+    if (!noMotion) {
+
+      /* ════════════════════════════════════════════
+         HERO — staggered line reveal
+      ════════════════════════════════════════════ */
+
+      animate('#hero-label',
+        { opacity: [0, 1], y: [14, 0] },
+        { duration: 0.55, delay: 0.3, easing: OUT }
+      )
+
+      const heroLines = document.querySelectorAll('#hero-h1 .reveal-line')
+      heroLines.forEach((line, i) => {
+        animate(line,
+          { y: ['115%', '0%'] },
+          { duration: 0.95, delay: 0.5 + i * 0.15, easing: PREMIUM }
+        )
+      })
+
+      animate('#hero-sub',
+        { opacity: [0, 1], y: [28, 0] },
+        { duration: 0.75, delay: 1.2, easing: PREMIUM }
+      )
+
+      const heroCtas = document.getElementById('hero-ctas')
+      if (heroCtas) heroCtas.style.opacity = '1'
+      document.querySelectorAll('#hero-ctas a').forEach((btn, i) => {
+        btn.style.opacity = '0'
+        animate(btn,
+          { opacity: [0, 1], y: [20, 0], scale: [0.92, 1] },
+          { duration: 0.75, delay: 1.4 + i * 0.12, easing: SPRING }
+        )
+      })
+
+      animate('#scroll-cue',
+        { opacity: [0, 0.5] },
+        { duration: 0.8, delay: 2.9, easing: OUT }
+      )
+
+      /* ════════════════════════════════════════════
+         SECTION H2 — word-by-word slide-up
+         (bidirectional: resets when leaving viewport)
+      ════════════════════════════════════════════ */
+
+      function splitH2(h2) {
+        h2.classList.remove('will-reveal')
+        h2.style.opacity = '1'
+        const parts = h2.innerHTML.split(/<br\s*\/?>/gi)
+        h2.innerHTML = ''
+        parts.forEach((part, pi) => {
+          if (pi > 0) h2.appendChild(document.createElement('br'))
+          const words = part.trim().split(/\s+/).filter(Boolean)
+          words.forEach((word, wi) => {
+            const wrap  = document.createElement('span')
+            wrap.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:bottom'
+            const inner = document.createElement('span')
+            inner.className = 'reveal-line'
+            inner.style.cssText = 'display:inline-block;transform:translateY(115%)'
+            inner.innerHTML = word
+            wrap.appendChild(inner)
+            h2.appendChild(wrap)
+            if (wi < words.length - 1) h2.appendChild(document.createTextNode(' '))
+          })
+        })
+        return h2.querySelectorAll('.reveal-line')
+      }
+
+      document.querySelectorAll('h2.h-section.will-reveal').forEach((h2) => {
+        const words = splitH2(h2)
+        let done = false
+        inView(h2, () => {
+          if (done) return
+          done = true
+          animate(words,
+            { y: ['115%', '0%'] },
+            { duration: 0.8, delay: stagger(0.065), easing: PREMIUM }
+          )
+        }, { amount: 0.25 })
+      })
+
+      /* ════════════════════════════════════════════
+         SECTION LABELS (bidirectional)
+      ════════════════════════════════════════════ */
+
+      document.querySelectorAll('p.label.will-reveal').forEach((el) => {
+        let done = false
+        inView(el, () => {
+          if (done) return
+          done = true
+          animate(el, { opacity: [0, 1], y: [12, 0] }, { duration: 0.45, easing: OUT })
+        }, { amount: 0.4 })
+      })
+
+      /* ════════════════════════════════════════════
+         STATS — scale + count-up (bidirectional)
+      ════════════════════════════════════════════ */
+
+      const statItems = [...document.querySelectorAll('.stat-item')]
+      statItems.forEach((item, idx) => {
+        const el  = item.querySelector('[data-val]')
+        if (!el) return
+        const end = parseInt(el.dataset.val, 10)
+        const sfx = el.dataset.sfx || ''
+        let done = false
+        inView(item, () => {
+          if (done) return
+          done = true
+          animate(item, { opacity: [0, 1], y: [30, 0], scale: [0.9, 1] },
+            { duration: 0.65, delay: idx * 0.1, easing: SPRING })
+          setTimeout(() => {
+            const duration = 1744
+            const startTime = performance.now()
+            function tick(now) {
+              const t = Math.min((now - startTime) / duration, 1)
+              const eased = t < 1 ? 1 - Math.pow(1 - t, 3) : 1
+              el.textContent = Math.round(eased * end) + sfx
+              if (t < 1) requestAnimationFrame(tick)
+            }
+            requestAnimationFrame(tick)
+          }, 300 + idx * 100)
+        }, { amount: 0.4 })
+      })
+
+      /* ════════════════════════════════════════════
+         SERVICE CARDS — staggered, bidirectional
+      ════════════════════════════════════════════ */
+
+      const svcCards = [...document.querySelectorAll('.svc-card')]
+      svcCards.forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(60px) scale(0.95)' })
+      if (svcCards[0]) {
+        let done = false
+        inView(svcCards[0], () => {
+          if (done) return
+          done = true
+          animate(svcCards,
+            { opacity: [0, 1], y: [60, 0], scale: [0.95, 1] },
+            { duration: 0.75, delay: stagger(0.1), easing: PREMIUM }
+          )
+        }, { amount: 0.06 })
+      }
+
+      /* ════════════════════════════════════════════
+         STICKY SCROLL — Process section
+      ════════════════════════════════════════════ */
+
+      if (window.innerWidth >= 768) {
+        const procSection = document.getElementById('process')
+        const procCards   = [...document.querySelectorAll('.proc-card')]
+        const procTabs    = [...document.querySelectorAll('.proc-tab')]
+        const procLabel   = document.getElementById('proc-label')
+        const procH2      = document.getElementById('proc-h2')
+        const procBar     = document.getElementById('proc-bar')
+        let activeProcStep = -1
+        let procIntroDone  = false
+
+        function setProcStep(step) {
+          if (step === activeProcStep) return
+          const prev = activeProcStep
+          activeProcStep = step
+
+          /* Card transition: outgoing slides up, incoming slides in */
+          if (prev >= 0 && procCards[prev]) {
+            animate(procCards[prev],
+              { opacity: [1, 0], y: [0, -28], scale: [1, 1.02] },
+              { duration: 0.38, easing: OUT }
+            )
+          }
+          if (procCards[step]) {
+            animate(procCards[step],
+              { opacity: [0, 1], y: [52, 0], scale: [0.96, 1] },
+              { duration: 0.65, easing: PREMIUM }
+            )
+          }
+
+          /* Tab states */
+          procTabs.forEach((tab, i) => {
+            const num   = tab.querySelector('.ptnum')
+            const label = tab.querySelector('.ptlabel')
+            const fill  = tab.querySelector('.ptfill')
+            if (i < step) {
+              if (num)   num.style.color   = 'var(--accent)'
+              if (label) label.style.color = 'var(--muted)'
+              if (fill)  fill.style.width  = '100%'
+            } else if (i === step) {
+              if (num)   num.style.color   = 'var(--text)'
+              if (label) label.style.color = 'var(--text)'
+              if (fill)  fill.style.width  = '100%'
+            } else {
+              if (num)   num.style.color   = 'var(--muted)'
+              if (label) label.style.color = 'var(--muted)'
+              if (fill)  fill.style.width  = '0%'
+            }
+          })
+        }
+
+        window.addEventListener('scroll', () => {
+          if (!procSection) return
+          const rect    = procSection.getBoundingClientRect()
+          const secH    = procSection.offsetHeight
+          const vh      = window.innerHeight
+          const scrolled = -rect.top
+          const total    = secH - vh
+
+          if (scrolled < 0 || scrolled > total) return
+
+          const p = scrolled / total  /* 0 → 1 */
+
+          /* Progress bar */
+          if (procBar) procBar.style.width = (p * 100).toFixed(1) + '%'
+
+          /* Header: animate in once after entering section */
+          if (!procIntroDone && p >= 0.02) {
+            procIntroDone = true
+            animate(procLabel, { opacity:[0,1], y:[12,0] }, { duration:0.5, easing:OUT })
+            animate(procH2,    { opacity:[0,1], y:[28,0] }, { duration:0.7, delay:0.1, easing:PREMIUM })
+          }
+
+          /* 3 steps over the last 95% of scroll (first 5% = header intro) */
+          if (procIntroDone) {
+            const sp   = Math.max(0, (p - 0.05) / 0.95)
+            const step = Math.min(2, Math.floor(sp * 3))
+            setProcStep(step)
+          }
+        }, { passive: true })
+      }
+
+      /* ════════════════════════════════════════════
+         WHY CARDS — grid stagger, bidirectional
+      ════════════════════════════════════════════ */
+
+      const whyCards = [...document.querySelectorAll('.why-card')]
+      whyCards.forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(50px) scale(0.95)' })
+      if (whyCards[0]) {
+        let done = false
+        inView(whyCards[0], () => {
+          if (done) return
+          done = true
+          animate(whyCards,
+            { opacity: [0, 1], y: [50, 0], scale: [0.95, 1] },
+            { duration: 0.65, delay: stagger(0.09), easing: PREMIUM }
+          )
+        }, { amount: 0.06 })
+      }
+
+      /* ════════════════════════════════════════════
+         CTA BLOCK — spring bounce, bidirectional
+      ════════════════════════════════════════════ */
+
+      let ctaDone = false
+      inView('#cta-block', () => {
+        if (ctaDone) return
+        ctaDone = true
+        animate('#cta-block',
+          { opacity: [0, 1], scale: [0.9, 1], y: [50, 0] },
+          { duration: 0.9, easing: SPRING }
+        )
+      }, { amount: 0.3 })
+
+      /* ════════════════════════════════════════════
+         CATCH-ALL — any remaining .will-reveal elements
+      ════════════════════════════════════════════ */
+
+      const handled = new Set([
+        ...svcCards, ...whyCards, ...statItems,
+        document.getElementById('hero-label'),
+        document.getElementById('hero-sub'),
+        document.getElementById('hero-ctas'),
+        ...document.querySelectorAll('p.label.will-reveal'),
+        ...document.querySelectorAll('h2.h-section')  /* already had will-reveal removed */
+      ].filter(Boolean))
+
+      document.querySelectorAll('.will-reveal').forEach((el) => {
+        if (handled.has(el)) return
+        let done = false
+        inView(el, () => {
+          if (done) return
+          done = true
+          animate(el, { opacity: [0, 1], y: [40, 0] }, { duration: 0.6, easing: PREMIUM })
+        }, { amount: 0.15 })
+      })
+
+      /* ════════════════════════════════════════════
+         CARD HOVER LIFT
+      ════════════════════════════════════════════ */
+
+      document.querySelectorAll('.svc-card, .why-card').forEach((card) => {
+        card.addEventListener('mouseenter', () =>
+          animate(card, { y: -10, scale: 1.015 }, { duration: 0.28, easing: SPRING })
+        )
+        card.addEventListener('mouseleave', () =>
+          animate(card, { y: 0, scale: 1 }, { duration: 0.28, easing: OUT })
+        )
+      })
+
+      /* ════════════════════════════════════════════
+         BUTTON FEEL — spring press
+      ════════════════════════════════════════════ */
+
+      document.querySelectorAll('.btn-primary, .btn-ghost').forEach((btn) => {
+        btn.addEventListener('mouseenter', () => animate(btn, { scale: 1.03  }, { duration: 0.2,  easing: SPRING }))
+        btn.addEventListener('mouseleave', () => animate(btn, { scale: 1     }, { duration: 0.18, easing: OUT }))
+        btn.addEventListener('mousedown',  () => animate(btn, { scale: 0.97  }, { duration: 0.08 }))
+        btn.addEventListener('mouseup',    () => animate(btn, { scale: 1.02  }, { duration: 0.15, easing: SPRING }))
+      })
+
+    } else {
+      /* Reduced motion — reveal everything instantly */
+      document.querySelectorAll('.will-reveal').forEach(el => {
+        el.style.opacity = '1'; el.style.transform = 'none'
+      })
+      document.querySelectorAll('.reveal-line').forEach(el => el.style.transform = 'none')
+      document.querySelectorAll('.svc-card, .why-card, .step-grid > div').forEach(el => {
+        el.style.opacity = '1'; el.style.transform = 'none'
+      })
+      const cta = document.getElementById('cta-block')
+      if (cta) { cta.style.opacity = '1'; cta.style.transform = 'none' }
+    }
+
+    /* ════════════════════════════════════════════
+       CUSTOM CURSOR — spring-follow orb
+    ════════════════════════════════════════════ */
+
+    /* ─── Mobile hamburger menu ─────────────────────────────────── */
+    ;(function() {
+      var burger = document.getElementById('nav-burger')
+      var menu   = document.getElementById('mobile-menu')
+      if (!burger || !menu) return
+
+      function openMenu() {
+        menu.classList.add('open')
+        burger.setAttribute('aria-expanded', 'true')
+        document.body.style.overflow = 'hidden'
+        var spans = burger.querySelectorAll('span')
+        spans[0].style.transform = 'translateY(6.5px) rotate(45deg)'
+        spans[1].style.opacity   = '0'
+        spans[2].style.transform = 'translateY(-6.5px) rotate(-45deg)'
+      }
+
+      function closeMenu() {
+        menu.classList.remove('open')
+        burger.setAttribute('aria-expanded', 'false')
+        document.body.style.overflow = ''
+        var spans = burger.querySelectorAll('span')
+        spans[0].style.transform = ''
+        spans[1].style.opacity   = ''
+        spans[2].style.transform = ''
+      }
+
+      window.closeMobileMenu = closeMenu
+
+      burger.addEventListener('click', function() {
+        menu.classList.contains('open') ? closeMenu() : openMenu()
+      })
+
+      menu.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu()
+      })
+    })()
+
+    if (window.matchMedia('(pointer: fine)').matches && !noMotion) {
+      const dot = document.getElementById('cursor-dot')
+      const orb = document.getElementById('cursor-orb')
+      if (dot && orb) {
+        let mx = window.innerWidth / 2, my = window.innerHeight / 2
+        let ox = mx, oy = my
+        document.addEventListener('mousemove', e => {
+          mx = e.clientX; my = e.clientY
+          dot.style.left = mx + 'px'; dot.style.top = my + 'px'
+        }, { passive: true })
+        ;(function loop() {
+          ox += (mx - ox) * 0.12; oy += (my - oy) * 0.12
+          orb.style.left = ox + 'px'; orb.style.top = oy + 'px'
+          requestAnimationFrame(loop)
+        })()
+        document.querySelectorAll('a, button, .svc-card, .why-card, .btn-primary, .btn-ghost').forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'))
+          el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'))
+        })
+        document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; orb.style.opacity = '0' })
+        document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; orb.style.opacity = '1' })
+      }
+    }
+  </script>
+
+</body>
+</html>
