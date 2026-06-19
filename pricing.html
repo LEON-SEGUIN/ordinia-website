@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -16,7 +16,7 @@
       theme: {
         extend: {
           fontFamily: {
-            heading: ['Syne', 'sans-serif'],
+            heading: ['"Space Grotesk"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace'],
             body:  ['Inter', 'sans-serif'],
           },
@@ -28,13 +28,15 @@
   <style>
     /* ── Brand tokens ─────────────────────────────────── */
     :root {
-      --bg:       #050505;
-      --surface:  #0e0e0e;
-      --surface2: #141414;
-      --border:   #1e1e1e;
-      --text:     #f0ede8;
-      --muted:    #7a7a7a;
-      --accent:   #d4cfc8;
+      --bg:        #0a0b0d;
+      --surface:   #101215;
+      --surface2:  #16191d;
+      --border:    #23272e;
+      --hairline:  #1b1e23;
+      --text:      #f5f6f8;
+      --muted:     #8b9198;
+      --accent:    #cdd2d8;
+      --accent-soft: rgba(205,210,216,0.13);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,24 +51,23 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Starfield ───────────────────────────────────── */
-    #starfield {
+    /* ── Architectural vertical guides (fixed, structural) ── */
+    .guides {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      overflow: hidden;
+      display: flex;
+      justify-content: center;
     }
-    .star {
-      position: absolute;
-      border-radius: 50%;
-      background: #ffffff;
-      animation: twinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+    .guides > div {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 32px;
+      border-left: 1px solid var(--hairline);
+      border-right: 1px solid var(--hairline);
     }
-    @keyframes twinkle {
-      0%, 100% { opacity: var(--min-op, 0.04); transform: scale(1); }
-      50%       { opacity: var(--max-op, 0.28); transform: scale(1.3); }
-    }
+    @media (max-width: 767px) { .guides { display: none; } }
 
     /* ── Grain overlay ───────────────────────────────── */
     .grain {
@@ -79,36 +80,25 @@
       background-size: 300px 300px;
     }
 
-    /* ── Atmospheric gradient drift ──────────────────── */
-    @keyframes grad-drift {
-      0%   { transform: translate(0,0) scale(1); }
-      33%  { transform: translate(3%,-3%) scale(1.06); }
-      66%  { transform: translate(-2%,3%) scale(.96); }
-      100% { transform: translate(0,0) scale(1); }
-    }
-    @keyframes glow-blink { 0%,100%{opacity:.25} 50%{opacity:.55} }
-    .grad1 { animation: grad-drift 22s ease-in-out infinite; }
-    .grad2 { animation: grad-drift 28s ease-in-out infinite reverse; }
-    .grad3 { animation: grad-drift 34s ease-in-out infinite 6s; }
-    .dot-glow { animation: glow-blink 4s ease-in-out infinite; }
-
     /* ── Typography helpers ──────────────────────────── */
     .h-display {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      line-height: 1.12;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.04;
+      text-transform: uppercase;
     }
     .h-section {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.18;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.06;
+      text-transform: uppercase;
     }
     .label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
     }
@@ -117,9 +107,9 @@
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--text); color: var(--bg);
-      font-family: 'Syne', sans-serif; font-weight: 600;
-      font-size: 15px; letter-spacing: -0.01em;
-      padding: 14px 28px; border-radius: 7px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      font-size: 14px; letter-spacing: 0.01em;
+      padding: 15px 30px; border-radius: 4px;
       border: 1px solid var(--text);
       text-decoration: none; cursor: pointer;
       position: relative; overflow: hidden;
@@ -138,9 +128,9 @@
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
       background: transparent; color: var(--text);
-      font-family: 'Syne', sans-serif; font-weight: 500;
-      font-size: 15px; letter-spacing: -0.01em;
-      padding: 14px 28px; border-radius: 7px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 500;
+      font-size: 14px; letter-spacing: 0.01em;
+      padding: 15px 30px; border-radius: 4px;
       border: 1px solid var(--border);
       text-decoration: none; cursor: pointer;
       white-space: nowrap;
@@ -175,53 +165,50 @@
     /* ── Price card ──────────────────────────────────── */
     .price-card {
       background: var(--surface);
-      padding: 44px 40px;
+      padding: 52px 44px;
       position: relative;
       display: flex;
       flex-direction: column;
       cursor: default;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 2px;
       overflow: hidden;
     }
     .price-card::before {
       content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(212,207,200,.1) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
       pointer-events: none;
     }
-    .price-card:hover::before { opacity: 1; }
+    .price-card:hover::before { transform: scaleX(1); }
 
     .price-card.featured {
       background: var(--surface2);
     }
-    .price-card.featured::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0.7;
-    }
+    .price-card.featured::before { transform: scaleX(1); opacity: 0.75; }
 
-    .price-eyebrow { margin-bottom: 22px; }
+    .price-eyebrow { margin-bottom: 26px; }
     .price-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.25rem; font-weight: 600;
-      letter-spacing: -0.015em;
-      margin-bottom: 22px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 26px;
     }
     .price-row {
       display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px;
-      padding-bottom: 24px; margin-bottom: 24px;
+      padding-bottom: 26px; margin-bottom: 26px;
       border-bottom: 1px solid var(--border);
     }
     .price-num {
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
       line-height: 1;
-      font-size: clamp(1.85rem, 2.8vw, 2.3rem);
+      font-size: clamp(2rem, 3vw, 2.5rem);
     }
     .price-unit {
       font-family: 'JetBrains Mono', monospace;
@@ -233,14 +220,21 @@
       font-size: 14.5px;
       line-height: 1.82;
     }
-    .price-list { list-style: none; display: flex; flex-direction: column; gap: 13px; margin-bottom: 32px; }
+    .price-list { list-style: none; display: flex; flex-direction: column; gap: 15px; margin-bottom: 38px; }
     .price-cta { margin-top: auto; justify-content: center; width: 100%; }
     .price-list li {
-      display: flex; align-items: flex-start; gap: 11px;
-      font-size: 13px; line-height: 1.55; color: var(--muted);
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 12.5px; line-height: 1.6; color: var(--muted);
       font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.02em;
     }
-    .price-list li svg { flex-shrink: 0; margin-top: 3px; }
+    .price-list li::before {
+      content: '';
+      width: 16px; height: 1px;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 9px;
+    }
 
     /* ── Custom cursor (desktop only) ───────────────── */
     @media (pointer: fine) {
@@ -293,7 +287,6 @@
     .will-reveal { opacity: 0; }
 
     @media (prefers-reduced-motion: reduce) {
-      .grad1, .grad2, .grad3, .dot-glow { animation: none !important; }
       .will-reveal { opacity: 1 !important; transform: none !important; }
     }
 
@@ -371,24 +364,8 @@
 </head>
 <body>
 
-  <!-- Starfield -->
-  <div id="starfield" aria-hidden="true"></div>
-
-  <!-- Global atmospheric background -->
-  <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden">
-    <div class="grad1" style="position:absolute;top:-30%;left:-15%;width:70%;height:80%;
-         background:radial-gradient(ellipse,rgba(212,207,200,.14) 0%,transparent 60%);border-radius:50%"></div>
-    <div class="grad2" style="position:absolute;bottom:-25%;right:-10%;width:65%;height:65%;
-         background:radial-gradient(ellipse,rgba(212,207,200,.10) 0%,transparent 60%);border-radius:50%"></div>
-    <div class="grad3" style="position:absolute;top:35%;left:38%;width:45%;height:55%;
-         background:radial-gradient(ellipse,rgba(255,255,255,.055) 0%,transparent 60%);border-radius:50%"></div>
-    <div class="dot-glow" style="position:absolute;top:22%;left:14%;width:4px;height:4px;
-         background:var(--accent);border-radius:50%;box-shadow:0 0 20px 8px rgba(212,207,200,.55)"></div>
-    <div class="dot-glow" style="position:absolute;top:68%;left:22%;width:3px;height:3px;
-         background:var(--accent);border-radius:50%;box-shadow:0 0 18px 6px rgba(212,207,200,.45);animation-delay:1.8s"></div>
-    <div class="dot-glow" style="position:absolute;top:38%;right:18%;width:3px;height:3px;
-         background:var(--accent);border-radius:50%;box-shadow:0 0 18px 6px rgba(212,207,200,.42);animation-delay:3.2s"></div>
-  </div>
+  <!-- Architectural vertical guides -->
+  <div class="guides" aria-hidden="true"><div></div></div>
 
   <!-- Grain -->
   <div class="grain" aria-hidden="true"></div>
@@ -440,13 +417,13 @@
   </div>
 
   <!-- ══════════════════════════ HEADER ══════════════════════════ -->
-  <section id="pricing-header" style="padding:172px 32px 72px;position:relative;z-index:1">
+  <section id="pricing-header" style="padding:120px 32px 52px;position:relative;z-index:1">
     <div style="max-width:1200px;margin:0 auto">
-      <p class="label will-reveal" style="margin-bottom:20px">Tarification</p>
-      <h1 class="h-display will-reveal" style="font-size:clamp(2.4rem,5vw,4.4rem);max-width:760px;margin-bottom:28px">
+      <p class="label will-reveal" style="margin-bottom:28px">Tarification</p>
+      <h1 class="h-display will-reveal" style="font-size:clamp(2.4rem,5.4vw,4.6rem);max-width:820px;margin-bottom:34px">
         Investissements &amp; Tarification
       </h1>
-      <p class="will-reveal" style="font-size:clamp(1rem,1.8vw,1.2rem);color:var(--muted);max-width:600px;line-height:1.8">
+      <p class="will-reveal" style="font-size:clamp(1rem,1.6vw,1.18rem);color:var(--muted);max-width:600px;line-height:1.75;font-weight:300">
         Une approche transparente et progressive. Vous ne payez que pour la valeur
         immédiate, à votre rythme.
       </p>
@@ -454,10 +431,10 @@
   </section>
 
   <!-- ══════════════════════════ PRICING GRID ══════════════════════════ -->
-  <section id="price-section" style="padding:0 32px 128px;position:relative;z-index:1">
+  <section id="price-section" style="padding:0 32px 96px;position:relative;z-index:1">
     <div style="max-width:1200px;margin:0 auto">
       <div id="price-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-           gap:20px;align-items:stretch">
+           gap:16px;align-items:stretch">
 
         <!-- Bloc 1 -->
         <div class="price-card featured will-reveal">
@@ -468,10 +445,10 @@
             <span class="price-unit">la session d'une heure</span>
           </div>
           <ul class="price-list">
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Une heure d'immersion en tête-à-tête</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Cartographie de vos processus</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Goulets d'étranglement identifiés</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Test des outils sur vos cas d'usage</li>
+            <li>Une heure d'immersion en tête-à-tête</li>
+            <li>Cartographie de vos processus</li>
+            <li>Goulets d'étranglement identifiés</li>
+            <li>Test des outils sur vos cas d'usage</li>
           </ul>
           <button type="button" class="btn-primary price-cta">Réserver l'atelier</button>
         </div>
@@ -485,10 +462,10 @@
             <span class="price-unit">/ heure</span>
           </div>
           <ul class="price-list">
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Sessions de travail régulières</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Configuration de votre Système d'Exploitation IA</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Sans engagement global</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Vous gardez le contrôle du budget et du rythme</li>
+            <li>Sessions de travail régulières</li>
+            <li>Configuration de votre Système d'Exploitation IA</li>
+            <li>Sans engagement global</li>
+            <li>Vous gardez le contrôle du budget et du rythme</li>
           </ul>
           <button type="button" class="btn-ghost price-cta">Réserver une session</button>
         </div>
@@ -501,10 +478,10 @@
             <span class="price-num">Sur devis</span>
           </div>
           <ul class="price-list">
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Agents IA dédiés sur mesure</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Automatisation de workflows complexes</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Proposition chiffrée précise</li>
-            <li><svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M2 6.5l3 3 6-6" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Basée sur l'audit de vos besoins</li>
+            <li>Agents IA dédiés sur mesure</li>
+            <li>Automatisation de workflows complexes</li>
+            <li>Proposition chiffrée précise</li>
+            <li>Basée sur l'audit de vos besoins</li>
           </ul>
           <button type="button" class="btn-ghost price-cta">Demander un devis</button>
         </div>
@@ -514,23 +491,16 @@
   </section>
 
   <!-- ══════════════════════════ CTA ══════════════════════════ -->
-  <section id="contact" style="padding:128px 32px;border-top:1px solid var(--border);
+  <section id="contact" style="padding:184px 32px;border-top:1px solid var(--border);
        position:relative;z-index:1;overflow:hidden">
 
-    <div style="position:absolute;inset:0;pointer-events:none" aria-hidden="true">
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-           width:70%;max-width:900px;aspect-ratio:2/1;
-           background:radial-gradient(ellipse,rgba(212,207,200,.055) 0%,transparent 65%);
-           border-radius:50%"></div>
-    </div>
-
-    <div id="cta-block" style="max-width:700px;margin:0 auto;text-align:center;
+    <div id="cta-block" style="max-width:760px;margin:0 auto;text-align:center;
          position:relative;z-index:1;opacity:0;transform:scale(0.96) translateY(30px)">
 
-      <p class="label" style="margin-bottom:24px">Passons à l'action</p>
+      <p class="label" style="margin-bottom:30px">Passons à l'action</p>
 
-      <h2 class="h-section" style="font-size:clamp(2rem,4.5vw,3.8rem);margin-bottom:32px">
-        Prêt à faire<br/>le premier pas&nbsp;?
+      <h2 class="h-section" style="font-size:clamp(2.2rem,5vw,4rem);margin-bottom:34px">
+        Prêt à faire le premier pas&nbsp;?
       </h2>
 
       <a href="mailto:contact@ordinia.fr" class="btn-primary" style="font-size:16px;padding:16px 40px">
@@ -564,85 +534,6 @@
 
     </div>
   </footer>
-
-  <!-- ══════════════════════════ STARFIELD ══════════════════════════ -->
-  <script>
-    (function() {
-      var sf = document.getElementById('starfield')
-      if (!sf) return
-
-      /* Parallax layers: 1 static + 3 moving (deeper = moves more).
-         depth 0 = static; cursor-following layers drift in the SAME direction
-         as the cursor for a subtle cosmic-depth effect. */
-      var DEPTHS = [0, 0.02, 0.045, 0.08]
-      /* weighted pick: ~50% static, rest spread across the moving layers */
-      var WEIGHTS = [0.5, 0.2, 0.18, 0.12]
-
-      var layers = DEPTHS.map(function(depth) {
-        var el = document.createElement('div')
-        el.style.cssText = 'position:absolute;inset:0;' +
-          (depth > 0 ? 'will-change:transform;' : '')
-        sf.appendChild(el)
-        return { el: el, depth: depth, frag: document.createDocumentFragment(),
-                 cx: 0, cy: 0, tx: 0, ty: 0 }
-      })
-
-      function pickLayer() {
-        var r = Math.random(), acc = 0
-        for (var i = 0; i < WEIGHTS.length; i++) {
-          acc += WEIGHTS[i]
-          if (r <= acc) return layers[i]
-        }
-        return layers[0]
-      }
-
-      for (var i = 0; i < 180; i++) {
-        var s = document.createElement('div')
-        s.className = 'star'
-        var size = (Math.random() * 1.6 + 0.5).toFixed(1)
-        var minOp = (Math.random() * 0.06 + 0.04).toFixed(2)
-        var maxOp = (Math.random() * 0.4  + 0.22).toFixed(2)
-        var dur   = (Math.random() * 6 + 3).toFixed(1)
-        var delay = '-' + (Math.random() * 10).toFixed(1)
-        s.style.left   = (Math.random() * 100).toFixed(2) + '%'
-        s.style.top    = (Math.random() * 100).toFixed(2) + '%'
-        s.style.width  = size + 'px'
-        s.style.height = size + 'px'
-        s.style.setProperty('--min-op', minOp)
-        s.style.setProperty('--max-op', maxOp)
-        s.style.setProperty('--dur',    dur + 's')
-        s.style.setProperty('--delay',  delay + 's')
-        pickLayer().frag.appendChild(s)
-      }
-      layers.forEach(function(l) { l.el.appendChild(l.frag) })
-
-      /* Cursor parallax — desktop pointer only, respects reduced-motion */
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      var fine   = window.matchMedia('(pointer: fine)').matches
-      var moving = layers.filter(function(l) { return l.depth > 0 })
-
-      if (fine && !reduce) {
-        document.addEventListener('mousemove', function(e) {
-          var dx = e.clientX - window.innerWidth / 2
-          var dy = e.clientY - window.innerHeight / 2
-          moving.forEach(function(l) {
-            l.tx = dx * l.depth
-            l.ty = dy * l.depth
-          })
-        }, { passive: true })
-
-        ;(function loop() {
-          moving.forEach(function(l) {
-            l.cx += (l.tx - l.cx) * 0.08
-            l.cy += (l.ty - l.cy) * 0.08
-            l.el.style.transform = 'translate3d(' + l.cx.toFixed(2) + 'px,' +
-                                   l.cy.toFixed(2) + 'px,0)'
-          })
-          requestAnimationFrame(loop)
-        })()
-      }
-    })()
-  </script>
 
   <!-- Failsafe: reveal everything if motion fails to load -->
   <script>
