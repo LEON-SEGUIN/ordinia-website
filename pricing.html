@@ -37,8 +37,6 @@
       --muted:     #8b9198;
       --accent:    #cdd2d8;
       --accent-soft: rgba(205,210,216,0.13);
-      --brand:     #2A5BFF;
-      --brand-soft: rgba(42,91,255,0.10);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -108,11 +106,11 @@
     /* ── Buttons ─────────────────────────────────────── */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--brand); color: #fff;
+      background: var(--text); color: var(--bg);
       font-family: 'Space Grotesk', sans-serif; font-weight: 600;
       font-size: 14px; letter-spacing: 0.01em;
       padding: 15px 30px; border-radius: 4px;
-      border: 1px solid var(--brand);
+      border: 1px solid var(--text);
       text-decoration: none; cursor: pointer;
       position: relative; overflow: hidden;
       white-space: nowrap;
@@ -123,9 +121,9 @@
       background: rgba(0,0,0,0);
       transition: background 0.18s ease;
     }
-    .btn-primary:hover::after { background: rgba(0,0,0,0.12); }
+    .btn-primary:hover::after { background: rgba(0,0,0,0.09); }
     .btn-primary:active { transform: scale(0.975); }
-    .btn-primary:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
@@ -140,7 +138,7 @@
     }
     .btn-ghost:hover  { border-color: var(--muted); }
     .btn-ghost:active { transform: scale(0.975); }
-    .btn-ghost:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+    .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     /* ── Nav link ────────────────────────────────────── */
     .nav-link {
@@ -154,7 +152,7 @@
     .nav-link::after {
       content: '';
       position: absolute; bottom: -3px; left: 0; right: 0;
-      height: 1px; background: var(--brand);
+      height: 1px; background: var(--accent);
       transform: scaleX(0); transform-origin: left;
       transition: transform 0.22s ease;
     }
@@ -162,7 +160,7 @@
     .nav-link:hover::after { transform: scaleX(1); }
     .nav-link.is-active { color: var(--text); }
     .nav-link.is-active::after { transform: scaleX(1); }
-    .nav-link:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; border-radius: 2px; }
+    .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
     /* ── Price card ──────────────────────────────────── */
     .price-card {
@@ -180,7 +178,7 @@
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
       height: 1px;
-      background: var(--brand);
+      background: var(--accent);
       transform: scaleX(0); transform-origin: left;
       transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
       pointer-events: none;
@@ -233,7 +231,7 @@
     .price-list li::before {
       content: '';
       width: 16px; height: 1px;
-      background: var(--brand);
+      background: var(--accent);
       flex-shrink: 0;
       margin-top: 9px;
     }
@@ -539,20 +537,29 @@
 
   <!-- Failsafe: reveal everything if motion fails to load -->
   <script>
-    window._revealFallback = setTimeout(function() {
+    /* Reveal all animated content statically — used by the failsafe below */
+    window._revealAllStatic = function() {
       document.querySelectorAll('.will-reveal').forEach(function(el) {
         el.style.opacity = '1'; el.style.transform = 'none'
       })
-      var nb = document.getElementById('navbar')
-      if (nb) { nb.style.opacity = '1'; nb.style.transform = 'none' }
-      var cta = document.getElementById('cta-block')
-      if (cta) { cta.style.opacity = '1'; cta.style.transform = 'none' }
-    }, 5000)
+      document.querySelectorAll('.price-card').forEach(function(el) {
+        el.style.opacity = '1'; el.style.transform = 'none'
+      })
+      ;['navbar', 'cta-block'].forEach(function(id) {
+        var el = document.getElementById(id)
+        if (el) { el.style.opacity = '1'; el.style.transform = 'none' }
+      })
+    }
+    /* Failsafe: if the main script never runs, reveal everything after 5s */
+    window._revealFallback = setTimeout(window._revealAllStatic, 5000)
   </script>
 
-  <script type="module">
-    import { animate, inView, stagger } from 'https://esm.sh/motion@10.18.0'
+  <!-- Motion self-hosted (same origin) — no flaky external CDN at runtime -->
+  <script src="./motion.js"></script>
 
+  <script>
+    /* Motion is loaded above as the global `Motion` (UMD). Classic script: no import, no CORS. */
+    const { animate, inView, stagger } = window.Motion
     clearTimeout(window._revealFallback)
     const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -630,7 +637,10 @@
       const cta = document.getElementById('cta-block')
       if (cta) { cta.style.opacity = '1'; cta.style.transform = 'none' }
     }
+  </script>
 
+  <!-- Cursor + mobile menu: pure vanilla, fully independent of Motion (always runs) -->
+  <script>
     /* ─── Mobile hamburger menu ─────────────────────── */
     ;(function() {
       var burger = document.getElementById('nav-burger')
@@ -662,8 +672,9 @@
       menu.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu() })
     })()
 
-    /* ─── Custom cursor ─────────────────────────────── */
-    if (window.matchMedia('(pointer: fine)').matches && !noMotion) {
+    /* ─── Custom cursor — spring-follow orb (vanilla, no Motion dependency) ─── */
+    var cursorReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (window.matchMedia('(pointer: fine)').matches && !cursorReduced) {
       const dot = document.getElementById('cursor-dot')
       const orb = document.getElementById('cursor-orb')
       if (dot && orb) {

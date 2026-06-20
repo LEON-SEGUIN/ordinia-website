@@ -28,17 +28,15 @@
   <style>
     /* ── Brand tokens ─────────────────────────────────── */
     :root {
-      --bg:        #0a0b0d;
-      --surface:   #101215;
-      --surface2:  #16191d;
-      --border:    #23272e;
-      --hairline:  #1b1e23;
-      --text:      #f5f6f8;
-      --muted:     #8b9198;
-      --accent:    #cdd2d8;
-      --accent-soft: rgba(205,210,216,0.13);
-      --brand:     #2A5BFF;
-      --brand-soft: rgba(42,91,255,0.10);
+      --bg:        #0a0b0d;   /* deep anthracite / off-black */
+      --surface:   #101215;   /* elevated panel */
+      --surface2:  #16191d;   /* floating panel */
+      --border:    #23272e;   /* subtle structural line */
+      --hairline:  #1b1e23;   /* fainter divider */
+      --text:      #f5f6f8;   /* clean cool off-white */
+      --muted:     #8b9198;   /* readable secondary text */
+      --accent:    #cdd2d8;   /* cool light steel — numbers, fine lines */
+      --accent-soft: rgba(205,210,216,0.13); /* faint accent fill */
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -125,17 +123,16 @@
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1;
-      color: var(--brand);
     }
 
     /* ── Buttons ─────────────────────────────────────── */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--brand); color: #fff;
+      background: var(--text); color: var(--bg);
       font-family: 'Space Grotesk', sans-serif; font-weight: 600;
       font-size: 14px; letter-spacing: 0.01em;
       padding: 15px 30px; border-radius: 4px;
-      border: 1px solid var(--brand);
+      border: 1px solid var(--text);
       text-decoration: none; cursor: pointer;
       position: relative; overflow: hidden;
       white-space: nowrap;
@@ -146,9 +143,9 @@
       background: rgba(0,0,0,0);
       transition: background 0.18s ease;
     }
-    .btn-primary:hover::after { background: rgba(0,0,0,0.12); }
+    .btn-primary:hover::after { background: rgba(0,0,0,0.09); }
     .btn-primary:active { transform: scale(0.975); }
-    .btn-primary:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
@@ -163,7 +160,7 @@
     }
     .btn-ghost:hover  { border-color: var(--muted); }
     .btn-ghost:active { transform: scale(0.975); }
-    .btn-ghost:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+    .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     /* ── Nav link ────────────────────────────────────── */
     .nav-link {
@@ -177,13 +174,13 @@
     .nav-link::after {
       content: '';
       position: absolute; bottom: -3px; left: 0; right: 0;
-      height: 1px; background: var(--brand);
+      height: 1px; background: var(--accent);
       transform: scaleX(0); transform-origin: left;
       transition: transform 0.22s ease;
     }
     .nav-link:hover { color: var(--text); }
     .nav-link:hover::after { transform: scaleX(1); }
-    .nav-link:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; border-radius: 2px; }
+    .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
     /* ── Service card ────────────────────────────────── */
     .svc-card {
@@ -200,7 +197,7 @@
       content: '';
       position: absolute; top: 0; left: 0; right: 0;
       height: 1px;
-      background: var(--brand);
+      background: var(--accent);
       transform: scaleX(0); transform-origin: left;
       transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
       pointer-events: none;
@@ -215,7 +212,7 @@
       font-weight: 500;
       font-size: 12px;
       letter-spacing: 0.22em;
-      color: var(--brand);
+      color: var(--accent);
       display: block;
       margin-bottom: 30px;
     }
@@ -918,23 +915,34 @@
 
   <!-- ══════════════════════════ MOTION ANIMATIONS ══════════════════════════ -->
   <script>
-    /* Failsafe: si le module motion ne charge pas en 5s, tout révéler */
-    var _revealFallback = setTimeout(function() {
+    /* Reveal all animated content statically — used by the failsafe below */
+    window._revealAllStatic = function() {
       document.querySelectorAll('.will-reveal').forEach(function(el) {
         el.style.opacity = '1'; el.style.transform = 'none'
       })
       document.querySelectorAll('.reveal-line').forEach(function(el) {
         el.style.transform = 'none'
       })
-      var nb = document.getElementById('navbar')
-      if (nb) { nb.style.opacity = '1'; nb.style.transform = 'none' }
-      var cta = document.getElementById('cta-block')
-      if (cta) { cta.style.opacity = '1'; cta.style.transform = 'none' }
-    }, 5000)
+      document.querySelectorAll('.svc-card, .why-card').forEach(function(el) {
+        el.style.opacity = '1'; el.style.transform = 'none'
+      })
+      ;['navbar', 'cta-block', 'proc-label', 'proc-h2'].forEach(function(id) {
+        var el = document.getElementById(id)
+        if (el) { el.style.opacity = '1'; el.style.transform = 'none' }
+      })
+      var firstProc = document.querySelector('.proc-card')
+      if (firstProc) { firstProc.style.opacity = '1'; firstProc.style.transform = 'none' }
+    }
+    /* Failsafe: if the main script never runs, reveal everything after 5s */
+    window._revealFallback = setTimeout(window._revealAllStatic, 5000)
   </script>
-  <script type="module">
-    import { animate, inView, stagger } from 'https://esm.sh/motion@10.18.0'
 
+  <!-- Motion self-hosted (same origin) — no flaky external CDN at runtime -->
+  <script src="./motion.js"></script>
+
+  <script>
+    /* Motion is loaded above as the global `Motion` (UMD). Classic script: no import, no CORS. */
+    const { animate, inView, stagger } = window.Motion
     clearTimeout(window._revealFallback)
     const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -1258,11 +1266,10 @@
       const cta = document.getElementById('cta-block')
       if (cta) { cta.style.opacity = '1'; cta.style.transform = 'none' }
     }
+  </script>
 
-    /* ════════════════════════════════════════════
-       CUSTOM CURSOR — spring-follow orb
-    ════════════════════════════════════════════ */
-
+  <!-- Cursor + mobile menu: pure vanilla, fully independent of Motion (always runs) -->
+  <script>
     /* ─── Mobile hamburger menu ─────────────────────────────────── */
     ;(function() {
       var burger = document.getElementById('nav-burger')
@@ -1300,7 +1307,9 @@
       })
     })()
 
-    if (window.matchMedia('(pointer: fine)').matches && !noMotion) {
+    /* ─── Custom cursor — spring-follow orb (vanilla, no Motion dependency) ─── */
+    var cursorReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (window.matchMedia('(pointer: fine)').matches && !cursorReduced) {
       const dot = document.getElementById('cursor-dot')
       const orb = document.getElementById('cursor-orb')
       if (dot && orb) {
