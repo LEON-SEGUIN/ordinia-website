@@ -32,6 +32,7 @@
       --surface:     #f6f7f9;   /* panneau (gris 100) */
       --surface2:    #ffffff;   /* panneau flottant (hover) */
       --border:      #e6e8ec;   /* trait structurel */
+      --stat-border: #cdd1d8;   /* grille des compteurs — plus marquée que --border */
       --hairline:    #eef0f3;   /* divider plus faible */
       --text:        #0d0d12;   /* noir profond */
       --muted:       #6b7280;   /* gris 500 — texte secondaire */
@@ -414,7 +415,7 @@
       .nav-links { display: none !important; }
       .hero-ctas { flex-direction: column; align-items: flex-start; }
       .stat-grid { grid-template-columns: 1fr !important; }
-      .stat-item + .stat-item { border-top: 1px solid var(--border) !important; border-right: none !important; }
+      .stat-item + .stat-item { border-top: 1px solid var(--stat-border) !important; border-right: none !important; }
     }
     @media (max-width: 640px) {
       .svc-card, .why-card { padding: 28px; }
@@ -709,17 +710,17 @@
   <!-- ══════════════════════════ STATS ══════════════════════════ -->
   <section style="padding:0 32px;position:relative;z-index:1">
     <div style="max-width:1200px;margin:0 auto;
-         border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+         border-top:1px solid var(--stat-border);border-bottom:1px solid var(--stat-border)">
 
       <div class="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr)">
 
-        <div class="stat-item will-reveal" style="text-align:center;padding:76px 28px;border-right:1px solid var(--border)">
+        <div class="stat-item will-reveal" style="text-align:center;padding:76px 28px;border-right:1px solid var(--stat-border)">
           <div class="stat-num" id="s0" data-val="6" data-sfx="+"
                style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
           <p class="label" style="margin-top:10px">clients accompagnés</p>
         </div>
 
-        <div class="stat-item will-reveal" style="text-align:center;padding:76px 28px;border-right:1px solid var(--border)">
+        <div class="stat-item will-reveal" style="text-align:center;padding:76px 28px;border-right:1px solid var(--stat-border)">
           <div class="stat-num" id="s1" data-val="23" data-sfx="+"
                style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
           <p class="label" style="margin-top:10px">automatisations déployées</p>
