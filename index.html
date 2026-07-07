@@ -372,6 +372,18 @@
       position: relative;
       height: 340px;
     }
+    .proc-card {
+      position: absolute; inset: 0;
+      border-radius: 3px;
+      padding: 48px 44px;
+      border: 1px solid transparent;
+      background:
+        linear-gradient(var(--surface2), var(--surface2)) padding-box,
+        linear-gradient(155deg, rgba(106,92,255,0.35), rgba(0,178,255,0.15) 45%, rgba(230,232,236,0.9) 85%) border-box;
+      box-shadow:
+        0 34px 70px -30px rgba(106,92,255,0.22),
+        0 10px 26px -8px rgba(13,13,18,0.06);
+    }
 
     /* Mobile: disable sticky, stack everything */
     @media (max-width: 767px) {
@@ -865,9 +877,7 @@
         <div class="proc-card-wrap">
 
           <div class="proc-card" data-step="0"
-               style="position:absolute;inset:0;border-radius:2px;padding:48px 44px;
-                      background:var(--surface);border:1px solid var(--border);
-                      opacity:0;transform:translateY(52px) scale(0.96)">
+               style="opacity:0;transform:translateY(52px) scale(0.96)">
             <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
                  line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">01</div>
@@ -878,15 +888,10 @@
               l'argent, car la technologie seule ne résout pas les vrais problèmes
               d'organisation.
             </p>
-            <div style="position:absolute;top:0;left:40px;right:40px;height:1px;
-                 background:linear-gradient(90deg,transparent,rgba(106,92,255,.22),transparent)"
-                 aria-hidden="true"></div>
           </div>
 
           <div class="proc-card" data-step="1"
-               style="position:absolute;inset:0;border-radius:2px;padding:48px 44px;
-                      background:var(--surface);border:1px solid var(--border);
-                      opacity:0;transform:translateY(52px) scale(0.96)">
+               style="opacity:0;transform:translateY(52px) scale(0.96)">
             <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
                  line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">02</div>
@@ -897,15 +902,10 @@
               précisément où l'automatisation va vous faire gagner du temps et de
               l'argent.
             </p>
-            <div style="position:absolute;top:0;left:40px;right:40px;height:1px;
-                 background:linear-gradient(90deg,transparent,rgba(106,92,255,.22),transparent)"
-                 aria-hidden="true"></div>
           </div>
 
           <div class="proc-card" data-step="2"
-               style="position:absolute;inset:0;border-radius:2px;padding:48px 44px;
-                      background:var(--surface);border:1px solid var(--border);
-                      opacity:0;transform:translateY(52px) scale(0.96)">
+               style="opacity:0;transform:translateY(52px) scale(0.96)">
             <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
                  line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">03</div>
@@ -916,9 +916,6 @@
               partenaire pour repenser vos opérations et faire de l'IA un véritable
               avantage concurrentiel.
             </p>
-            <div style="position:absolute;top:0;left:40px;right:40px;height:1px;
-                 background:linear-gradient(90deg,transparent,rgba(106,92,255,.22),transparent)"
-                 aria-hidden="true"></div>
           </div>
 
         </div>
