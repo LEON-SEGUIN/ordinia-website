@@ -135,6 +135,19 @@
       background: linear-gradient(to bottom, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
     }
 
+    /* ── CTA section: short glowing gradient divider instead of a hard border ── */
+    .cta-divider::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 160px; height: 1px; pointer-events: none;
+      background: linear-gradient(90deg, transparent, var(--accent) 25%, var(--accent-2) 50%, var(--accent) 75%, transparent);
+    }
+    .cta-divider::after {
+      content: ''; position: absolute; top: -2.5px; left: 50%; transform: translateX(-50%);
+      width: 6px; height: 6px; border-radius: 50%; pointer-events: none;
+      background: var(--grad);
+      box-shadow: 0 0 14px rgba(106,92,255,0.55), 0 0 5px rgba(0,178,255,0.5);
+    }
+
     /* ── Typography helpers ──────────────────────────── */
     .h-display {
       font-family: 'Space Grotesk', sans-serif;
@@ -1006,7 +1019,7 @@
   </section>
 
   <!-- ══════════════════════════ CTA ══════════════════════════ -->
-  <section id="contact" style="padding:208px 32px;border-top:1px solid var(--accent);
+  <section id="contact" class="cta-divider" style="padding:208px 32px;
        position:relative;z-index:1;overflow:hidden">
 
     <div id="cta-block" style="max-width:780px;margin:0 auto;text-align:center;
