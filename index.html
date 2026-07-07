@@ -121,6 +121,20 @@
     /* ── Stats: counter transparent so the background AND constellation show through ── */
     .stat-num { opacity: 0.5; }
 
+    /* ── Stats: fading divider lines (soft ends instead of a hard stop) ── */
+    .stat-frame { position: relative; }
+    .stat-frame::before, .stat-frame::after {
+      content: ''; position: absolute; left: 0; right: 0; height: 1px; pointer-events: none;
+      background: linear-gradient(to right, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
+    }
+    .stat-frame::before { top: 0; }
+    .stat-frame::after  { bottom: 0; }
+    .stat-item { position: relative; }
+    .stat-item.stat-vline::after {
+      content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 1px; pointer-events: none;
+      background: linear-gradient(to bottom, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
+    }
+
     /* ── Typography helpers ──────────────────────────── */
     .h-display {
       font-family: 'Space Grotesk', sans-serif;
@@ -415,7 +429,11 @@
       .nav-links { display: none !important; }
       .hero-ctas { flex-direction: column; align-items: flex-start; }
       .stat-grid { grid-template-columns: 1fr !important; }
-      .stat-item + .stat-item { border-top: 1px solid var(--stat-border) !important; border-right: none !important; }
+      .stat-item.stat-vline::after { display: none; }
+      .stat-item + .stat-item::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; pointer-events: none;
+        background: linear-gradient(to right, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
+      }
     }
     @media (max-width: 640px) {
       .svc-card, .why-card { padding: 28px; }
@@ -709,18 +727,17 @@
 
   <!-- ══════════════════════════ STATS ══════════════════════════ -->
   <section style="padding:0 32px;position:relative;z-index:1">
-    <div style="max-width:1200px;margin:0 auto;
-         border-top:1px solid var(--stat-border);border-bottom:1px solid var(--stat-border)">
+    <div class="stat-frame" style="max-width:1200px;margin:0 auto">
 
       <div class="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr)">
 
-        <div class="stat-item will-reveal" style="text-align:center;padding:76px 28px;border-right:1px solid var(--stat-border)">
+        <div class="stat-item stat-vline will-reveal" style="text-align:center;padding:76px 28px">
           <div class="stat-num" id="s0" data-val="6" data-sfx="+"
                style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
           <p class="label" style="margin-top:10px">clients accompagnés</p>
         </div>
 
-        <div class="stat-item will-reveal" style="text-align:center;padding:76px 28px;border-right:1px solid var(--stat-border)">
+        <div class="stat-item stat-vline will-reveal" style="text-align:center;padding:76px 28px">
           <div class="stat-num" id="s1" data-val="23" data-sfx="+"
                style="font-size:clamp(2.4rem,4.5vw,3.8rem)">0</div>
           <p class="label" style="margin-top:10px">automatisations déployées</p>
@@ -989,7 +1006,7 @@
   </section>
 
   <!-- ══════════════════════════ CTA ══════════════════════════ -->
-  <section id="contact" style="padding:208px 32px;border-top:1px solid var(--border);
+  <section id="contact" style="padding:208px 32px;border-top:1px solid var(--accent);
        position:relative;z-index:1;overflow:hidden">
 
     <div id="cta-block" style="max-width:780px;margin:0 auto;text-align:center;
