@@ -53,24 +53,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Architectural vertical guides (fixed, structural) ── */
-    .guides {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      display: flex;
-      justify-content: center;
-    }
-    .guides > div {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 32px;
-      border-left: 1px solid var(--hairline);
-      border-right: 1px solid var(--hairline);
-    }
-    @media (max-width: 767px) { .guides { display: none; } }
-
     /* ── Grain overlay ───────────────────────────────── */
     .grain {
       position: fixed;
@@ -523,8 +505,6 @@
   <!-- Site-wide unified soft aurora background -->
   <div class="bg-aurora" aria-hidden="true"></div>
 
-  <!-- Architectural vertical guides -->
-  <div class="guides" aria-hidden="true"><div></div></div>
 
   <!-- Grain -->
   <div class="grain" aria-hidden="true"></div>
@@ -888,8 +868,8 @@
                style="position:absolute;inset:0;border-radius:2px;padding:48px 44px;
                       background:var(--surface);border:1px solid var(--border);
                       opacity:0;transform:translateY(52px) scale(0.96)">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
-                 color:rgba(106,92,255,.13);line-height:1;margin-bottom:30px;user-select:none"
+            <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
+                 line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">01</div>
             <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;
                  letter-spacing:-.02em;margin-bottom:14px">Le piège actuel</h3>
@@ -907,8 +887,8 @@
                style="position:absolute;inset:0;border-radius:2px;padding:48px 44px;
                       background:var(--surface);border:1px solid var(--border);
                       opacity:0;transform:translateY(52px) scale(0.96)">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
-                 color:rgba(106,92,255,.13);line-height:1;margin-bottom:30px;user-select:none"
+            <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
+                 line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">02</div>
             <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;
                  letter-spacing:-.02em;margin-bottom:14px">Le vrai besoin</h3>
@@ -926,8 +906,8 @@
                style="position:absolute;inset:0;border-radius:2px;padding:48px 44px;
                       background:var(--surface);border:1px solid var(--border);
                       opacity:0;transform:translateY(52px) scale(0.96)">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
-                 color:rgba(106,92,255,.13);line-height:1;margin-bottom:30px;user-select:none"
+            <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
+                 line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">03</div>
             <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;
                  letter-spacing:-.02em;margin-bottom:14px">Notre mission</h3>
