@@ -437,86 +437,161 @@
       #proc-bar-wrap { display: none !important; }
     }
 
-    /* ── Mobile nav ──────────────────────────────────── */
+    /* Responsive copy swap — desktop keeps its exact original text.
+       .m-hide = shown on desktop, hidden on mobile.
+       .m-only = hidden on desktop (this base rule), shown on mobile.
+       Because desktop text is untouched and .m-only is display:none on
+       desktop, the desktop render is byte-for-byte identical. */
+    .m-only { display: none; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MOBILE — rebuilt for phones (≤ 768px)
+       Every rule is scoped to a mobile media query, so the desktop
+       layout (≥ 769px) is left completely untouched.
+       ───────────────────────────────────────────────────────────────
+       Mobile rhythm tokens:
+         page gutter ......... 22px
+         section block ....... 56px
+         heading → content ... 34px
+         card padding ........ 30px 24px
+         body copy ........... 15px / 1.68
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* ── Nav: swap the desktop links for the hamburger ─────────────── */
     @media (max-width: 768px) {
-      .nav-links { display: none !important; }
-      .hero-ctas { flex-direction: column; align-items: flex-start; }
-      .stat-grid { grid-template-columns: 1fr !important; }
-      .stat-item.stat-vline::after { display: none; }
-      .stat-item + .stat-item::before {
-        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; pointer-events: none;
-        background: linear-gradient(to right, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
-      }
-    }
-    @media (max-width: 640px) {
-      .svc-card, .why-card { padding: 28px; }
-    }
-
-    /* ═══════════════════════════════════════════════
-       MOBILE — ≤ 767px
-       All rules scoped here so desktop is untouched
-    ═══════════════════════════════════════════════ */
-    @media (max-width: 767px) {
-      /* Navbar */
-      #navbar { padding: 12px 20px !important; }
-      #navbar > a img { height: 54px !important; transform: scale(1) !important; transform-origin: left center !important; }
-      #nav-cta-desktop { display: none !important; }
+      .nav-links  { display: none !important; }
       #nav-burger { display: flex !important; }
+    }
 
-      /* Mobile menu overlay */
-      #mobile-menu { display: none; }
+    @media (max-width: 767px) {
+
+      /* Activate the mobile copy swap */
+      .m-hide { display: none !important; }
+      .m-only { display: inline !important; }
+
+      /* ── NAVBAR — slimmer bar, smaller lockup ───────────────────── */
+      #navbar         { padding: 9px 20px !important; }
+      #navbar > a img { height: 42px !important; transform: none !important; transform-origin: left center !important; }
+
+      #mobile-menu      { display: none; }
       #mobile-menu.open { display: flex !important; }
 
-      /* Hero */
-      #hero-section { padding: 96px 20px 64px !important; }
-      .rings-float { width: min(86vw, 300px) !important; height: min(86vw, 300px) !important; opacity: 0.12 !important; }
-      #hero-h1 { font-size: clamp(1.7rem, 7.2vw, 2.4rem) !important; max-width: 100% !important; line-height: 1.25 !important; letter-spacing: -0.02em !important; }
-      #hero-h1 .overflow-clip { white-space: normal !important; }
+      /* ── HERO — compact, content-first (no forced 100vh) ────────── */
+      #hero-section {
+        min-height: 0 !important;
+        overflow: hidden !important;
+        padding: 84px 22px 52px !important;
+      }
+      .rings-float {
+        width: min(74vw, 280px) !important; height: min(74vw, 280px) !important;
+        top: 24vh !important; right: -8% !important; opacity: 0.09 !important;
+      }
+      #hero-label {
+        font-size: 10px !important; letter-spacing: 0.16em !important;
+        margin-bottom: 18px !important;
+      }
+      #hero-h1 {
+        font-size: clamp(1.6rem, 7.6vw, 2.1rem) !important;
+        line-height: 1.14 !important; letter-spacing: -0.02em !important;
+        max-width: 100% !important; margin-bottom: 20px !important;
+      }
+      #hero-h1 .overflow-clip,
       #hero-h1 .reveal-line { white-space: normal !important; }
-      #hero-sub { max-width: 100% !important; font-size: 0.95rem !important; margin-bottom: 36px !important; }
-      .hero-ctas { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
-      .hero-ctas a { justify-content: center !important; width: 100% !important; box-sizing: border-box !important; text-align: center !important; }
+      #hero-sub {
+        font-size: 0.97rem !important; line-height: 1.62 !important;
+        max-width: 100% !important; margin-bottom: 28px !important;
+      }
+      .hero-ctas {
+        flex-direction: column !important; align-items: stretch !important;
+        gap: 11px !important; width: 100% !important;
+      }
+      .hero-ctas a {
+        justify-content: center !important; width: 100% !important;
+        box-sizing: border-box !important; text-align: center !important;
+        padding: 15px 24px !important;
+      }
+      #scroll-cue { display: none !important; }
 
-      /* Stats */
-      .stat-item { padding: 28px 20px !important; }
+      /* ── STATS — tight, hairline-divided stack ──────────────────── */
+      #stats     { padding: 4px 22px !important; }
+      .stat-grid { grid-template-columns: 1fr !important; }
+      .stat-item { padding: 24px 14px !important; }
+      .stat-item.stat-vline::after { display: none !important; }
+      .stat-item + .stat-item::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0;
+        height: 1px; pointer-events: none;
+        background: linear-gradient(to right, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
+      }
+      .stat-num         { font-size: clamp(2rem, 9.5vw, 2.5rem) !important; }
+      .stat-item .label { margin-top: 8px !important; font-size: 10px !important; letter-spacing: 0.14em !important; }
 
-      /* Services */
-      #services { padding: 72px 20px !important; }
-      #svc-grid { grid-template-columns: 1fr !important; }
-      .svc-card { padding: 28px 24px !important; }
+      /* ── Shared section shell + section headings ────────────────── */
+      #services, #pourquoi { padding: 56px 22px !important; }
+      #services > div > div:first-child,
+      #pourquoi > div > div:first-child { margin-bottom: 34px !important; max-width: 100% !important; }
+      .h-section { font-size: clamp(1.5rem, 6.4vw, 1.95rem) !important; line-height: 1.14 !important; }
 
-      /* Process */
-      #proc-sticky { padding: 64px 20px !important; }
-      .proc-card { padding: 28px 24px !important; }
+      /* ── SERVICES cards ─────────────────────────────────────────── */
+      #svc-grid           { grid-template-columns: 1fr !important; }
+      .svc-card           { padding: 30px 24px !important; }
+      .svc-card .card-ic  { margin-bottom: 12px !important; }
+      .svc-card .card-num { margin-bottom: 14px !important; }
+      .svc-card h3        { font-size: 1.2rem !important; margin-bottom: 12px !important; }
+      .svc-card p         { font-size: 15px !important; line-height: 1.68 !important; }
 
-      /* Why D&S */
-      #pourquoi { padding: 72px 20px !important; }
-      #why-grid { grid-template-columns: 1fr !important; }
-      .why-card { padding: 28px 24px !important; }
+      /* ── PROCESS — drop the redundant tab index, keep the cards ──── */
+      #proc-sticky          { padding: 52px 22px !important; }
+      #proc-tabs            { display: none !important; }
+      #proc-label           { margin-bottom: 20px !important; }
+      #proc-h2              { margin-bottom: 0 !important; max-width: 100% !important; }
+      .proc-col-grid        { gap: 30px !important; }
+      .proc-card-wrap       { gap: 14px !important; }
+      .proc-card            { padding: 28px 24px !important; }
+      .proc-card .grad-text { font-size: 40px !important; margin-bottom: 16px !important; }
+      .proc-card h3         { font-size: 1.15rem !important; }
+      .proc-card p          { font-size: 15px !important; line-height: 1.7 !important; }
 
-      /* CTA */
-      #contact { padding: 72px 20px !important; }
-      #cta-block h2 { font-size: clamp(1.7rem, 7.5vw, 2.6rem) !important; }
+      /* ── WHY D&S — compact 2×2 benefit tiles (denser than desktop) ─ */
+      #why-grid           { grid-template-columns: 1fr 1fr !important; }
+      .why-card           { padding: 22px 16px !important; }
+      .why-card .card-ic  { margin-bottom: 12px !important; }
+      .why-card .card-ic svg { width: 26px !important; height: 26px !important; }
+      .why-card .card-num { margin-bottom: 9px !important; }
+      .why-card h3        { font-size: 0.98rem !important; margin-bottom: 0 !important; line-height: 1.25 !important; }
+      .why-card p         { display: none !important; }
+
+      /* ── CTA ────────────────────────────────────────────────────── */
+      #contact          { padding: 66px 22px !important; }
+      #cta-block .label { margin-bottom: 20px !important; }
+      #cta-block h2 {
+        font-size: clamp(1.7rem, 7.4vw, 2.25rem) !important;
+        line-height: 1.12 !important; margin-bottom: 18px !important;
+      }
+      #cta-block p {
+        font-size: 0.98rem !important; line-height: 1.65 !important;
+        margin-bottom: 32px !important;
+      }
       #cta-block .btn-primary {
-        display: flex !important;
-        justify-content: center !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
+        display: flex !important; justify-content: center !important;
+        width: 100% !important; box-sizing: border-box !important;
+        padding: 16px 26px !important;
       }
 
-      /* Footer */
-      footer { padding: 40px 20px !important; }
+      /* ── FOOTER ─────────────────────────────────────────────────── */
+      footer { padding: 36px 22px !important; }
       footer > div {
-        flex-direction: column !important;
-        align-items: center !important;
-        text-align: center !important;
-        gap: 20px !important;
+        flex-direction: column !important; align-items: center !important;
+        text-align: center !important; gap: 18px !important;
       }
-      footer > div > img { height: 64px !important; }
-      footer nav { flex-wrap: wrap !important; justify-content: center !important; gap: 14px 20px !important; }
+      footer > div > img { height: 52px !important; }
+      footer nav { flex-wrap: wrap !important; justify-content: center !important; gap: 12px 20px !important; }
+    }
 
-      /* Section headings */
-      .h-section { font-size: clamp(1.6rem, 7vw, 2.4rem) !important; }
+    /* ── Very small phones (≤ 360px) — nudge the display type down ─── */
+    @media (max-width: 360px) {
+      #hero-h1      { font-size: 1.5rem !important; }
+      .h-section    { font-size: 1.42rem !important; }
+      #cta-block h2 { font-size: 1.6rem !important; }
     }
 
     /* Hamburger button — hidden on desktop */
@@ -713,9 +788,9 @@
       <p class="will-reveal" id="hero-sub"
          style="font-size:clamp(1.05rem,1.65vw,1.25rem);color:var(--muted);
                 max-width:620px;line-height:1.72;margin-bottom:46px;font-weight:300">
-        Oubliez les théories complexes sur l'IA. Nous construisons des systèmes
+        <span class="m-hide">Oubliez les théories complexes sur l'IA. Nous construisons des systèmes
         sur-mesure qui libèrent vos équipes, suppriment les erreurs manuelles et
-        augmentent directement votre rentabilité.
+        augmentent directement votre rentabilité.</span><span class="m-only">Des systèmes IA sur-mesure qui libèrent vos équipes, éliminent les erreurs manuelles et boostent votre rentabilité.</span>
       </p>
 
       <div class="hero-ctas will-reveal" id="hero-ctas"
@@ -739,7 +814,7 @@
   </section>
 
   <!-- ══════════════════════════ STATS ══════════════════════════ -->
-  <section style="padding:0 32px;position:relative;z-index:1">
+  <section id="stats" style="padding:0 32px;position:relative;z-index:1">
     <div class="stat-frame" style="max-width:1200px;margin:0 auto">
 
       <div class="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr)">
@@ -789,8 +864,8 @@
             Diagnostic
           </h3>
           <p style="color:var(--muted);font-size:14.5px;line-height:1.8;font-weight:300">
-            On identifie vos pertes de temps. Nous analysons vos façons de faire actuelles
-            pour trouver exactement où l'IA aura le plus gros impact financier pour vous.
+            <span class="m-hide">On identifie vos pertes de temps. Nous analysons vos façons de faire actuelles
+            pour trouver exactement où l'IA aura le plus gros impact financier pour vous.</span><span class="m-only">On analyse vos façons de faire pour cibler là où l'IA aura le plus gros impact financier.</span>
           </p>
         </div>
 
@@ -802,9 +877,9 @@
             Création
           </h3>
           <p style="color:var(--muted);font-size:14.5px;line-height:1.8;font-weight:300">
-            On construit vos automatisations. Finies les tâches manuelles interminables.
+            <span class="m-hide">On construit vos automatisations. Finies les tâches manuelles interminables.
             Nous développons des systèmes qui s'intègrent à vos outils existants et font
-            le travail à votre place.
+            le travail à votre place.</span><span class="m-only">On construit des automatisations qui s'intègrent à vos outils et font le travail à votre place.</span>
           </p>
         </div>
 
@@ -816,9 +891,9 @@
             Suivi
           </h3>
           <p style="color:var(--muted);font-size:14.5px;line-height:1.8;font-weight:300">
-            On garantit la performance. Votre entreprise évolue, vos systèmes doivent
+            <span class="m-hide">On garantit la performance. Votre entreprise évolue, vos systèmes doivent
             suivre. Nous restons à vos côtés pour assurer la maintenance technique et
-            adapter les automatisations à vos nouveaux besoins.
+            adapter les automatisations à vos nouveaux besoins.</span><span class="m-only">On assure la maintenance et on fait évoluer vos systèmes au rythme de vos besoins.</span>
           </p>
         </div>
 
@@ -915,9 +990,9 @@
             <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;
                  letter-spacing:-.02em;margin-bottom:14px">Le piège actuel</h3>
             <p style="color:var(--muted);font-size:14.5px;line-height:1.82;font-weight:300">
-              Beaucoup d'entreprises achètent des outils IA au hasard et perdent de
+              <span class="m-hide">Beaucoup d'entreprises achètent des outils IA au hasard et perdent de
               l'argent, car la technologie seule ne résout pas les vrais problèmes
-              d'organisation.
+              d'organisation.</span><span class="m-only">Acheter des outils IA au hasard fait perdre de l'argent : la technologie seule ne suffit pas.</span>
             </p>
           </div>
 
@@ -929,9 +1004,9 @@
             <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;
                  letter-spacing:-.02em;margin-bottom:14px">Le vrai besoin</h3>
             <p style="color:var(--muted);font-size:14.5px;line-height:1.82;font-weight:300">
-              L'enjeu n'est pas d'avoir le dernier logiciel à la mode, mais de savoir
+              <span class="m-hide">L'enjeu n'est pas d'avoir le dernier logiciel à la mode, mais de savoir
               précisément où l'automatisation va vous faire gagner du temps et de
-              l'argent.
+              l'argent.</span><span class="m-only">Savoir précisément où l'automatisation vous fait gagner du temps et de l'argent.</span>
             </p>
           </div>
 
@@ -943,9 +1018,9 @@
             <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;
                  letter-spacing:-.02em;margin-bottom:14px">Notre mission</h3>
             <p style="color:var(--muted);font-size:14.5px;line-height:1.82;font-weight:300">
-              Nous ne sommes pas de simples vendeurs d'outils. Nous devenons votre
+              <span class="m-hide">Nous ne sommes pas de simples vendeurs d'outils. Nous devenons votre
               partenaire pour repenser vos opérations et faire de l'IA un véritable
-              avantage concurrentiel.
+              avantage concurrentiel.</span><span class="m-only">On devient votre partenaire pour faire de l'IA un vrai avantage concurrentiel.</span>
             </p>
           </div>
 
@@ -1008,7 +1083,7 @@
         <div class="why-card will-reveal">
           <span class="card-ic" style="animation-delay:-3s"><svg viewBox="0 0 24 24" fill="none" stroke="url(#cg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
           <span class="card-num">04</span>
-          <h3 class="font-heading" style="font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin-bottom:14px">Un retour sur investissement prouvé</h3>
+          <h3 class="font-heading" style="font-size:1.15rem;font-weight:700;letter-spacing:-.015em;margin-bottom:14px"><span class="m-hide">Un retour sur investissement prouvé</span><span class="m-only">Un ROI prouvé</span></h3>
           <p style="color:var(--muted);font-size:14px;line-height:1.8;font-weight:300">
             Nous définissons des objectifs clairs avant de commencer, pour que vous sachiez exactement ce que chaque système vous rapporte.
           </p>
@@ -1034,8 +1109,8 @@
 
       <p style="color:var(--muted);font-size:1.05rem;line-height:1.75;font-weight:300;
                 max-width:520px;margin:0 auto 56px">
-        Prenons une heure pour analyser vos processus et trouver votre première piste
-        d'automatisation rentable.
+        <span class="m-hide">Prenons une heure pour analyser vos processus et trouver votre première piste
+        d'automatisation rentable.</span><span class="m-only">Une heure pour analyser vos processus et trouver votre première automatisation rentable.</span>
       </p>
 
       <a href="pricing.html" class="btn-primary" style="font-size:15px;padding:17px 42px">
