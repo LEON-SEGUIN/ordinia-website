@@ -476,30 +476,42 @@
       #mobile-menu      { display: none; }
       #mobile-menu.open { display: flex !important; }
 
-      /* ── HERO — compact, content-first (no forced 100vh) ────────── */
+      /* ── HERO — fills the first screen: only the headline + the two
+             CTAs are visible on load; the counter appears on scroll ─── */
       #hero-section {
-        min-height: 0 !important;
+        min-height: 100vh !important;   /* fallback */
+        min-height: 100svh !important;  /* exclude mobile browser chrome */
         overflow: hidden !important;
-        padding: 84px 22px 52px !important;
+        align-items: stretch !important;
+        padding: 84px 22px 92px !important;
       }
+      #hero-content {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        min-height: 100%;
+      }
+      /* Push the CTAs toward the lower part of the screen so the hero
+         reads top-to-bottom (headline up, buttons down) */
+      #hero-content .hero-ctas { margin-top: 44px !important; }
       .rings-float {
         width: min(74vw, 280px) !important; height: min(74vw, 280px) !important;
         top: 24vh !important; right: -8% !important; opacity: 0.09 !important;
       }
       #hero-label {
         font-size: 10px !important; letter-spacing: 0.16em !important;
-        margin-bottom: 18px !important;
+        margin-bottom: 26px !important;
       }
       #hero-h1 {
         font-size: clamp(1.6rem, 7.6vw, 2.1rem) !important;
         line-height: 1.14 !important; letter-spacing: -0.02em !important;
-        max-width: 100% !important; margin-bottom: 20px !important;
+        max-width: 100% !important; margin-bottom: 30px !important;
       }
       #hero-h1 .overflow-clip,
       #hero-h1 .reveal-line { white-space: normal !important; }
       #hero-sub {
         font-size: 0.97rem !important; line-height: 1.62 !important;
-        max-width: 100% !important; margin-bottom: 28px !important;
+        max-width: 100% !important; margin-bottom: 0 !important;
       }
       .hero-ctas {
         flex-direction: column !important; align-items: stretch !important;
@@ -771,7 +783,7 @@
     </div>
 
     <!-- Hero content -->
-    <div style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1">
+    <div id="hero-content" style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1">
 
       <p class="label will-reveal" id="hero-label" style="margin-bottom:36px">
         D&S Intelligence&nbsp;&nbsp;<span style="color:var(--accent)">/</span>&nbsp;&nbsp;Systèmes Agentiques
