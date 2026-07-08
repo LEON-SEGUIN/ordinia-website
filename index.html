@@ -483,7 +483,7 @@
         min-height: 100svh !important;  /* exclude mobile browser chrome */
         overflow: hidden !important;
         align-items: stretch !important;
-        padding: 84px 22px 92px !important;
+        padding: 66px 22px 92px !important;
       }
       #hero-content {
         display: flex !important;
@@ -491,21 +491,20 @@
         justify-content: center !important;
         min-height: 100%;
       }
-      /* Push the CTAs toward the lower part of the screen so the hero
-         reads top-to-bottom (headline up, buttons down) */
-      #hero-content .hero-ctas { margin-top: 44px !important; }
+      /* Generous gap before the CTAs so the block spreads down the screen */
+      #hero-content .hero-ctas { margin-top: 70px !important; }
       .rings-float {
         width: min(74vw, 280px) !important; height: min(74vw, 280px) !important;
         top: 24vh !important; right: -8% !important; opacity: 0.42 !important;
       }
       #hero-label {
         font-size: 10px !important; letter-spacing: 0.16em !important;
-        margin-bottom: 26px !important;
+        margin-bottom: 42px !important;
       }
       #hero-h1 {
         font-size: clamp(1.6rem, 7.6vw, 2.1rem) !important;
         line-height: 1.14 !important; letter-spacing: -0.02em !important;
-        max-width: 100% !important; margin-bottom: 30px !important;
+        max-width: 100% !important; margin-bottom: 54px !important;
       }
       #hero-h1 .overflow-clip,
       #hero-h1 .reveal-line { white-space: normal !important; }
@@ -522,7 +521,9 @@
         box-sizing: border-box !important; text-align: center !important;
         padding: 15px 24px !important;
       }
-      #scroll-cue { display: none !important; }
+      /* Scroll cue — "Défiler" + fading line, anchored at the bottom of
+         the first screen to invite scrolling toward the counter */
+      #scroll-cue { display: flex !important; bottom: 26px !important; }
 
       /* ── STATS — tight, hairline-divided stack ──────────────────── */
       #stats     { padding: 4px 22px !important; }
