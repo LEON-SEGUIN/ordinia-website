@@ -53,24 +53,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Architectural vertical guides (fixed, structural) ── */
-    .guides {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      display: flex;
-      justify-content: center;
-    }
-    .guides > div {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 32px;
-      border-left: 1px solid var(--hairline);
-      border-right: 1px solid var(--hairline);
-    }
-    @media (max-width: 767px) { .guides { display: none; } }
-
     /* ── Grain overlay ───────────────────────────────── */
     .grain {
       position: fixed;
@@ -87,6 +69,8 @@
       0%,100% { transform: translate(0,0) scale(1);         opacity: 0.8; }
       50%     { transform: translate(3%,-2.5%) scale(1.10);  opacity: 1;   }
     }
+    /* Défilé de tons du dégradé (prix + boutons) — comme le titre de la page d'accueil */
+    @keyframes gradShift { to { background-position: 200% 50%; } }
     /* Site-wide unified soft aurora — fixed, behind everything, same on every screen */
     .bg-aurora {
       position: fixed; inset: -10%; z-index: -1; pointer-events: none;
@@ -120,11 +104,34 @@
       text-transform: uppercase;
       color: var(--muted);
     }
+    /* Eyebrow de section — kicker au-dessus du titre */
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 13px;
+      font-family: 'JetBrains Mono', monospace; font-weight: 500;
+      font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-eyebrow::before {
+      content: ''; width: 28px; height: 2px; border-radius: 2px;
+      background: var(--grad); flex-shrink: 0;
+    }
+    /* Titre de section — plus gros que les titres de cartes */
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.032em; line-height: 1.04;
+      font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+      margin: 0 0 18px;
+    }
+    .section-sub { color: var(--muted); font-size: 15px; max-width: 660px; line-height: 1.75; }
 
     /* ── Buttons ─────────────────────────────────────── */
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--grad); color: #ffffff;
+      background: linear-gradient(90deg, #6a5cff, #00b2ff, #6a5cff);
+      background-size: 200% 100%;
+      animation: gradShift 6s linear infinite;
+      color: #ffffff;
       font-family: 'Space Grotesk', sans-serif; font-weight: 600;
       font-size: 14px; letter-spacing: 0.01em;
       padding: 15px 30px; border-radius: 6px;
@@ -232,7 +239,9 @@
       letter-spacing: -0.03em;
       line-height: 1;
       font-size: clamp(2rem, 3vw, 2.5rem);
-      background: var(--grad);
+      background: linear-gradient(90deg, #6a5cff, #00b2ff, #6a5cff);
+      background-size: 200% 100%;
+      animation: gradShift 6s linear infinite;
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
     }
@@ -256,10 +265,283 @@
     }
     .price-list li::before {
       content: '';
-      width: 16px; height: 1px;
-      background: var(--accent);
+      width: 16px; height: 16px;
       flex-shrink: 0;
-      margin-top: 9px;
+      margin-top: 1px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.2 8.4l3 3 6.6-7' stroke='%236a5cff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    /* Automation card — boxed icon + "à partir de" prefix */
+    .card-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--accent); margin-bottom: 24px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(106,92,255,0.16);
+      transition: background 0.3s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .card-icon svg { width: 23px; height: 23px; }
+    .price-card:hover .card-icon { background: rgba(106,92,255,0.15); transform: translateY(-2px); }
+    .price-prefix {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .price-col { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+    .price-figs { display: flex; align-items: baseline; gap: 10px; }
+
+    /* ── Audit — carte maîtresse (le point de départ obligatoire) ── */
+    .audit-wrap { position: relative; margin-bottom: 4px; }
+    .audit-card {
+      position: relative;
+      border-radius: 5px;
+      padding: 1px;                 /* fine gradient border */
+      background: var(--grad);
+      box-shadow: 0 34px 80px rgba(106,92,255,0.20), 0 6px 20px rgba(13,13,18,0.06);
+    }
+    .audit-inner {
+      position: relative;
+      background:
+        radial-gradient(900px 420px at 90% -20%, rgba(0,178,255,0.11), transparent 68%),
+        radial-gradient(760px 420px at 2% 130%, rgba(106,92,255,0.11), transparent 68%),
+        #ffffff;
+      border-radius: 4px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+    .audit-badge {
+      position: absolute; top: -14px; left: 44px; z-index: 4;
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--grad); color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 8px 15px; border-radius: 100px;
+      box-shadow: 0 10px 24px rgba(106,92,255,0.38);
+    }
+    .audit-badge .dot {
+      position: relative; width: 7px; height: 7px; border-radius: 50%; background: #fff;
+    }
+    .audit-badge .dot::after {
+      content: ''; position: absolute; inset: -2.5px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.95);
+      animation: dotPing 1.9s cubic-bezier(0,0,0.2,1) infinite;
+    }
+    @keyframes dotPing {
+      0%       { transform: scale(0.6); opacity: 0.95; }
+      70%,100% { transform: scale(1.7); opacity: 0;    }
+    }
+    .audit-left  { padding: 46px 50px 44px; }
+    .audit-right {
+      padding: 46px 44px 46px 76px; display: flex; flex-direction: column; justify-content: center;
+      position: relative;
+      background:
+        radial-gradient(620px 460px at 116% -8%,  rgba(0,178,255,0.11),  transparent 62%),
+        radial-gradient(540px 540px at 108% 112%, rgba(106,92,255,0.10), transparent 60%),
+        linear-gradient(180deg, #fdfdff, #fafaff);
+      border-left: 1px solid rgba(106,92,255,0.10);
+    }
+
+    /* Le déroulé — timeline verticale connectée */
+    .timeline { list-style: none; position: relative; }
+    .tl-step { position: relative; display: grid; grid-template-columns: 42px 1fr; gap: 20px; padding-bottom: 22px; }
+    .tl-step:last-child { padding-bottom: 0; }
+    .tl-step:not(:last-child)::before {
+      content: ''; position: absolute; left: 20px; top: 46px; bottom: -4px; width: 2px;
+      background: linear-gradient(to bottom, rgba(106,92,255,0.55), rgba(0,178,255,0.18));
+    }
+    .tl-node {
+      position: relative; z-index: 1;
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13.5px;
+      color: #fff;
+      background: linear-gradient(120deg, #6a5cff, #00b2ff, #6a5cff);
+      background-size: 200% 100%;
+      box-shadow: 0 8px 18px rgba(106,92,255,0.30);
+      animation: gradShift 6s linear infinite, tlGlow 3s ease-in-out infinite;
+    }
+    /* anneau qui s'étend depuis chaque pastille */
+    .tl-node::after {
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      border: 2px solid rgba(0,178,255,0.65); pointer-events: none;
+      animation: tlPing 3s cubic-bezier(0,0,0.2,1) infinite;
+    }
+    @keyframes tlPing {
+      0%       { transform: scale(1);    opacity: 0.65; }
+      70%,100% { transform: scale(1.5);  opacity: 0;    }
+    }
+    @keyframes tlGlow {
+      0%,100% { box-shadow: 0 8px 18px rgba(106,92,255,0.30); }
+      14%     { box-shadow: 0 8px 20px rgba(106,92,255,0.42), 0 0 0 3px rgba(0,178,255,0.12); }
+      40%     { box-shadow: 0 8px 18px rgba(106,92,255,0.30); }
+    }
+    /* cascade 01 → 02 → 03 (le dégradé reste continu, seule la pulsation est décalée) */
+    .tl-step:nth-of-type(1) .tl-node { animation-delay: 0s, 0s;   }
+    .tl-step:nth-of-type(2) .tl-node { animation-delay: 0s, 0.9s; }
+    .tl-step:nth-of-type(3) .tl-node { animation-delay: 0s, 1.8s; }
+    .tl-step:nth-of-type(1) .tl-node::after { animation-delay: 0s;   }
+    .tl-step:nth-of-type(2) .tl-node::after { animation-delay: 0.9s; }
+    .tl-step:nth-of-type(3) .tl-node::after { animation-delay: 1.8s; }
+    .tl-body { padding-top: 8px; }
+    .tl-body h4 {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+      font-size: 15.5px; letter-spacing: -0.01em; margin-bottom: 6px;
+    }
+    .tl-body p { font-size: 13px; color: var(--muted); line-height: 1.66; max-width: 40ch; }
+
+    .audit-name {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.032em; line-height: 1.02;
+      font-size: clamp(1.75rem, 2.7vw, 2.55rem);
+      margin: 8px 0 20px;
+    }
+    .audit-price-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    .audit-price {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      letter-spacing: -0.03em; line-height: 0.9;
+      font-size: clamp(3.2rem, 6.4vw, 4.6rem);
+      background: linear-gradient(90deg, #6a5cff, #00b2ff, #6a5cff);
+      background-size: 200% 100%;
+      animation: gradShift 6s linear infinite;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .audit-price-sub {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      color: var(--muted); line-height: 1.55;
+    }
+    .audit-strike { text-decoration: line-through; text-decoration-color: rgba(107,114,128,0.65); }
+    .audit-note {
+      display: flex; gap: 11px; align-items: flex-start;
+      background: var(--accent-soft); border: 1px solid rgba(106,92,255,0.18);
+      border-radius: 8px; padding: 13px 15px; margin: 20px 0;
+      font-size: 12.5px; color: #4a4c61; line-height: 1.65;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.01em;
+    }
+    .audit-note svg { flex-shrink: 0; margin-top: 1px; color: var(--accent); }
+    .audit-desc { color: var(--muted); font-size: 15px; line-height: 1.75; margin-bottom: 24px; max-width: 46ch; }
+
+    .audit-steps-eyebrow { margin-bottom: 26px; }
+
+    /* Flow connector: audit → automations */
+    .flow-connector { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 34px 0 34px; }
+    .flow-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent); }
+    .flow-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); text-align: center;
+    }
+    .flow-label b { color: var(--text); font-weight: 500; }
+
+    /* ── Site internet — bande showcase (panneau sombre, contraste premium) ── */
+    @keyframes spinSlow    { to { transform: rotate(360deg);  } }
+    @keyframes spinSlowRev { to { transform: rotate(-360deg); } }
+    @keyframes floatY      { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    @keyframes nodePulse2  { 0%,100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+    .web-band {
+      position: relative; border-radius: 5px; overflow: hidden;
+      background: #0b0b10;
+      display: grid; grid-template-columns: 1.12fr 0.88fr;
+      box-shadow: 0 34px 90px rgba(13,13,18,0.30);
+    }
+    .web-glow {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(700px 520px at 90% 12%,  rgba(0,178,255,0.30),  transparent 60%),
+        radial-gradient(640px 640px at 104% 108%, rgba(106,92,255,0.34), transparent 60%),
+        radial-gradient(500px 400px at 0% 100%,   rgba(106,92,255,0.10), transparent 60%);
+    }
+    .web-left { position: relative; z-index: 1; padding: 52px 54px; color: #fff; display: flex; flex-direction: column; justify-content: center; }
+    .web-left .label { color: rgba(255,255,255,0.62); }
+    .web-title {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-transform: uppercase;
+      letter-spacing: -0.03em; line-height: 1.04;
+      font-size: clamp(1.8rem, 3vw, 2.7rem); margin: 14px 0 18px;
+    }
+    .web-title em {
+      font-style: normal;
+      background: linear-gradient(90deg,#8f83ff,#4fd0ff);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .web-desc { color: rgba(255,255,255,0.74); font-size: 15px; line-height: 1.78; max-width: 48ch; margin-bottom: 26px; }
+    .web-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+    .web-chip {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); padding: 9px 15px 9px 12px; border-radius: 7px;
+      border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.045);
+      cursor: default;
+      transition: transform .28s cubic-bezier(.16,1,.3,1), border-color .28s ease,
+                  background .28s ease, box-shadow .28s ease;
+    }
+    .web-chip svg { width: 15px; height: 15px; color: var(--accent-2); flex-shrink: 0; transition: filter .28s ease; }
+    .web-chip:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0,178,255,0.5);
+      background: rgba(0,178,255,0.09);
+      box-shadow: 0 8px 22px rgba(0,178,255,0.16);
+    }
+    .web-chip:hover svg { filter: drop-shadow(0 0 6px rgba(0,178,255,0.85)); }
+    .web-chip:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+    .web-foot { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+    .web-price { display: flex; flex-direction: column; gap: 4px; }
+    .web-price .p {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.02em;
+      font-size: 1.55rem; line-height: 1;
+      background: linear-gradient(90deg,#8f83ff,#4fd0ff,#8f83ff);
+      background-size: 200% 100%;
+      animation: gradShift 6s linear infinite;
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .web-price .u { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; }
+
+    .btn-light {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: #0b0b10;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px;
+      padding: 14px 26px; border-radius: 6px; border: 1px solid transparent;
+      text-decoration: none; cursor: pointer; white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      transition: box-shadow 0.28s ease, transform 0.15s ease;
+    }
+    .btn-light:hover  { box-shadow: 0 12px 32px rgba(0,178,255,0.28); }
+    .btn-light:active { transform: scale(0.975); }
+    .btn-light:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+
+    .web-right { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 12px; }
+    .web-canvas { width: min(500px, 100%); aspect-ratio: 1 / 1; display: block; animation: floatY 8s ease-in-out infinite; }
+
+    /* ── Maintenance — accompagnement récurrent (discret) ── */
+    .maint-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .maint-card {
+      position: relative; border: 1px solid var(--border); border-radius: 2px;
+      padding: 30px 28px; background: var(--surface2);
+      display: flex; flex-direction: column;
+    }
+    .maint-card.pick { border-color: rgba(106,92,255,0.32); box-shadow: 0 16px 40px rgba(106,92,255,0.10); }
+    .maint-tag {
+      position: absolute; top: -10px; left: 24px;
+      font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #fff; background: var(--grad); padding: 5px 11px; border-radius: 100px;
+    }
+    .maint-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 0.01em; margin-bottom: 14px; }
+    .maint-price { display: flex; align-items: baseline; gap: 6px; padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+    .maint-price b {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.7rem; letter-spacing: -0.02em; line-height: 1;
+      background: linear-gradient(90deg, #6a5cff, #00b2ff, #6a5cff); background-size: 200% 100%;
+      animation: gradShift 6s linear infinite;
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .maint-price span { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted); }
+    .maint-list { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .maint-list li { display: flex; gap: 11px; align-items: flex-start; font-size: 12.5px; color: var(--muted); line-height: 1.5; font-family: 'JetBrains Mono', monospace; }
+    .maint-list li::before {
+      content: ''; width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.2 8.4l3 3 6.6-7' stroke='%236a5cff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
     }
 
     /* ── Custom cursor (desktop only) ───────────────── */
@@ -315,6 +597,9 @@
     @media (prefers-reduced-motion: reduce) {
       .will-reveal { opacity: 1 !important; transform: none !important; }
       .bg-aurora { animation: none !important; }
+      .price-num, .audit-price, .web-price .p, .maint-price b, .btn-primary { animation: none !important; }
+      .tl-node { animation: none !important; }
+      .tl-node::after { display: none !important; }
     }
 
     /* ── Hamburger button ────────────────────────────── */
@@ -359,10 +644,30 @@
         line-height: 1.15 !important;
       }
       #pricing-header p:last-of-type { font-size: 1rem !important; }
-      #price-section { padding: 0 20px 72px !important; }
+      #audit-section { padding: 0 20px !important; }
+      .audit-inner { grid-template-columns: 1fr !important; }
+      .audit-left { padding: 46px 24px 34px !important; }
+      .audit-right { padding: 40px 24px 44px !important; border-left: none !important; }
+      .audit-badge { left: 20px !important; font-size: 9.5px !important; padding: 7px 13px !important; }
+      .audit-desc { max-width: none !important; }
+      .flow-connector { margin: 26px 0 !important; padding: 0 20px !important; }
+      .flow-line { height: 30px !important; }
+
+      #price-section { padding: 0 20px 48px !important; }
       #price-grid { grid-template-columns: 1fr !important; }
       .price-card { padding: 32px 24px !important; }
-      .price-card.featured::after { background: linear-gradient(90deg, var(--accent), transparent); }
+
+      #web-section { padding: 16px 20px 0 !important; }
+      .web-band { grid-template-columns: 1fr !important; }
+      .web-left { padding: 42px 24px 34px !important; }
+      .web-desc { max-width: none !important; }
+      .web-right { padding: 4px 24px 44px !important; order: 2; }
+      .web-canvas { width: 240px !important; }
+      .web-foot { gap: 18px !important; }
+      .btn-light { width: 100%; justify-content: center; box-sizing: border-box; }
+
+      #maint-section { padding: 56px 20px 8px !important; }
+      .maint-grid { grid-template-columns: 1fr !important; }
 
       #contact { padding: 72px 20px !important; }
       #cta-block h2 { font-size: clamp(1.7rem, 7.5vw, 2.6rem) !important; }
@@ -393,9 +698,6 @@
 
   <!-- Site-wide unified soft aurora background -->
   <div class="bg-aurora" aria-hidden="true"></div>
-
-  <!-- Architectural vertical guides -->
-  <div class="guides" aria-hidden="true"><div></div></div>
 
   <!-- Grain -->
   <div class="grain" aria-hidden="true"></div>
@@ -450,70 +752,419 @@
   <section id="pricing-header" style="padding:120px 32px 52px;position:relative;z-index:1">
     <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1">
       <p class="label will-reveal" style="margin-bottom:28px">Tarification</p>
-      <h1 class="h-display will-reveal" style="font-size:clamp(2.4rem,5.4vw,4.6rem);max-width:820px;margin-bottom:34px">
-        Investissements &amp; Tarification
+      <h1 class="h-display will-reveal" style="font-size:clamp(2.3rem,5.2vw,4.4rem);max-width:900px;margin-bottom:34px">
+        On diagnostique.<br />Puis on automatise.
       </h1>
-      <p class="will-reveal" style="font-size:clamp(1rem,1.6vw,1.18rem);color:var(--muted);max-width:600px;line-height:1.75;font-weight:300">
-        Une approche transparente et progressive. Vous ne payez que pour la valeur
-        immédiate, à votre rythme.
+      <p class="will-reveal" style="font-size:clamp(1rem,1.6vw,1.18rem);color:var(--muted);max-width:640px;line-height:1.75;font-weight:300">
+        Chaque collaboration démarre par un audit de votre infrastructure. C'est lui qui
+        révèle les automatisations les plus rentables pour vous — avant que vous n'engagiez
+        le moindre euro.
       </p>
     </div>
   </section>
 
-  <!-- ══════════════════════════ PRICING GRID ══════════════════════════ -->
-  <section id="price-section" style="padding:0 32px 96px;position:relative;z-index:1">
+  <!-- ══════════════════════════ AUDIT — CARTE MAÎTRESSE ══════════════════════════ -->
+  <section id="audit-section" style="padding:0 32px 0;position:relative;z-index:1">
     <div style="max-width:1200px;margin:0 auto">
+      <div class="audit-wrap will-reveal">
+        <div class="audit-badge">
+          <span class="dot"></span>Étape 01 · Le point de départ
+        </div>
+
+        <div class="audit-card">
+          <div class="audit-inner">
+
+            <!-- Colonne gauche : offre + prix + CTA -->
+            <div class="audit-left">
+              <p class="label">Indispensable avant toute automatisation</p>
+              <h2 class="audit-name">Audit<br />d'Infrastructure</h2>
+
+              <div class="audit-price-row">
+                <span class="audit-price">0&nbsp;€</span>
+                <span class="audit-price-sub">
+                  d'avance à engager<br />
+                  <span class="audit-strike">Valeur&nbsp;800&nbsp;€</span> — facturé sur validation
+                </span>
+              </div>
+
+              <div class="audit-note">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0"/>
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                  <path d="M8.5 12.2l2.4 2.4 4.6-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>L'audit (800&nbsp;€) n'est facturé qu'à la validation du projet — puis intégré
+                à votre plan d'automatisation. Zéro risque, zéro avance.</span>
+              </div>
+
+              <p class="audit-desc">
+                Une analyse approfondie de vos processus actuels pour concevoir une stratégie
+                d'automatisation sur-mesure et réellement rentable pour votre entreprise.
+              </p>
+
+              <button type="button" class="btn-primary price-cta">
+                Demander un audit
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Colonne droite : le déroulé en 3 temps (timeline) -->
+            <div class="audit-right">
+              <p class="label audit-steps-eyebrow">Le déroulé, en 3 temps</p>
+
+              <ol class="timeline">
+                <li class="tl-step">
+                  <span class="tl-node">01</span>
+                  <div class="tl-body">
+                    <h4>Analyse de l'existant</h4>
+                    <p>Immersion technique pour identifier vos goulots d'étranglement et vos opportunités de croissance.</p>
+                  </div>
+                </li>
+                <li class="tl-step">
+                  <span class="tl-node">02</span>
+                  <div class="tl-body">
+                    <h4>Restitution stratégique</h4>
+                    <p>Rapport détaillé : cartographie des processus, devis d'implémentation et estimation précise de votre retour sur investissement.</p>
+                  </div>
+                </li>
+                <li class="tl-step">
+                  <span class="tl-node">03</span>
+                  <div class="tl-body">
+                    <h4>Passage à l'action</h4>
+                    <p>Nous sélectionnons ensemble les automatisations à déployer. En validant le plan, l'audit s'intègre au projet global.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connecteur audit → automatisations -->
+  <div class="flow-connector will-reveal">
+    <div class="flow-line"></div>
+    <p class="flow-label">L'audit débloque le déploiement de vos&nbsp;<b>automatisations</b></p>
+    <div class="flow-line"></div>
+  </div>
+
+  <!-- ══════════════════════════ AUTOMATISATIONS ══════════════════════════ -->
+  <section id="price-section" style="padding:0 32px 64px;position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto">
+
+      <div class="grid-head will-reveal" style="margin-bottom:30px">
+        <p class="section-eyebrow">Automatisations</p>
+        <h2 class="section-title">Les plus demandées</h2>
+        <p class="section-sub">
+          Chaque automatisation est conçue sur mesure, autour de votre métier et de vos outils —
+          jamais une solution sortie d'un catalogue. Voici celles que nos clients nous demandent
+          le plus&nbsp;; si la vôtre n'y figure pas, nous la construisons pour vous. Les tarifs indiqués
+          correspondent à la mise en place.
+        </p>
+      </div>
+
       <div id="price-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
            gap:16px;align-items:stretch">
 
-        <!-- Bloc 1 -->
-        <div class="price-card featured will-reveal">
-          <p class="label price-eyebrow">Point de départ</p>
-          <h3 class="price-name">L'Atelier Initial</h3>
+        <!-- Comptes-rendus -->
+        <div class="price-card will-reveal">
+          <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="label price-eyebrow">Productivité</p>
+          <h3 class="price-name">Comptes-Rendus Intelligents</h3>
           <div class="price-row">
-            <span class="price-num">60&nbsp;€</span>
-            <span class="price-unit">la session d'une heure</span>
+            <div class="price-col">
+              <span class="price-prefix">à partir de</span>
+              <div class="price-figs">
+                <span class="price-num">690&nbsp;€</span>
+                <span class="price-unit">· mise en place</span>
+              </div>
+            </div>
           </div>
           <ul class="price-list">
-            <li>Une heure d'immersion en tête-à-tête</li>
-            <li>Cartographie de vos processus</li>
-            <li>Goulets d'étranglement identifiés</li>
-            <li>Test des outils sur vos cas d'usage</li>
+            <li>Assistant présent en réunion &amp; visio</li>
+            <li>Maîtrise le vocabulaire de votre métier</li>
+            <li>Comptes-rendus au ton &amp; à la charte de l'entreprise</li>
+            <li>Jusqu'à 5 h gagnées chaque semaine</li>
           </ul>
-          <button type="button" class="btn-primary price-cta">Réserver l'atelier</button>
+          <button type="button" class="btn-ghost price-cta">Déployer ce système</button>
         </div>
 
-        <!-- Bloc 2 (mis en avant) -->
+        <!-- Lead gen -->
         <div class="price-card will-reveal">
-          <p class="label price-eyebrow">Construction</p>
-          <h3 class="price-name">L'Accompagnement Continu</h3>
+          <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3.5 20c0-3 2.6-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M18 7v6M15 10h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="label price-eyebrow">Prospection</p>
+          <h3 class="price-name">Lead Gen &amp; Prospection</h3>
           <div class="price-row">
-            <span class="price-num">90&nbsp;€</span>
-            <span class="price-unit">/ heure</span>
+            <div class="price-col">
+              <span class="price-prefix">à partir de</span>
+              <div class="price-figs">
+                <span class="price-num">890&nbsp;€</span>
+                <span class="price-unit">· mise en place</span>
+              </div>
+            </div>
           </div>
           <ul class="price-list">
-            <li>Sessions de travail régulières</li>
-            <li>Configuration de votre Système d'Exploitation IA</li>
-            <li>Sans engagement global</li>
-            <li>Vous gardez le contrôle du budget et du rythme</li>
+            <li>Scraping LinkedIn ciblé &amp; automatisé</li>
+            <li>Enrichissement des données (email, tel…)</li>
+            <li>Injection directe dans votre CRM</li>
+            <li>Un flux de leads qui tourne 24/7</li>
           </ul>
-          <button type="button" class="btn-ghost price-cta">Réserver une session</button>
+          <button type="button" class="btn-ghost price-cta">Déployer ce système</button>
         </div>
 
-        <!-- Bloc 3 -->
+        <!-- Support IA -->
         <div class="price-card will-reveal">
+          <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M8 10h8M8 13h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <p class="label price-eyebrow">Relation client</p>
+          <h3 class="price-name">Support Client IA 24/7</h3>
+          <div class="price-row">
+            <div class="price-col">
+              <span class="price-prefix">à partir de</span>
+              <div class="price-figs">
+                <span class="price-num">990&nbsp;€</span>
+                <span class="price-unit">· mise en place</span>
+              </div>
+            </div>
+          </div>
+          <ul class="price-list">
+            <li>Agent branché sur votre base de connaissances</li>
+            <li>Réponses instantanées, jour &amp; nuit</li>
+            <li>Escalade intelligente vers vos équipes</li>
+            <li>Ton &amp; posture de votre marque</li>
+          </ul>
+          <button type="button" class="btn-ghost price-cta">Déployer ce système</button>
+        </div>
+
+        <!-- Traitement documentaire -->
+        <div class="price-card will-reveal">
+          <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 3h6l4 4v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M14 3v4h4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M9.5 14l1.7 1.7L15 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <p class="label price-eyebrow">Back-office</p>
+          <h3 class="price-name">Traitement Documentaire</h3>
+          <div class="price-row">
+            <div class="price-col">
+              <span class="price-prefix">à partir de</span>
+              <div class="price-figs">
+                <span class="price-num">790&nbsp;€</span>
+                <span class="price-unit">· mise en place</span>
+              </div>
+            </div>
+          </div>
+          <ul class="price-list">
+            <li>Extraction OCR + IA (factures, devis, contrats)</li>
+            <li>Classification &amp; archivage automatiques</li>
+            <li>Saisie dans vos outils, sans intervention</li>
+            <li>Fini les heures de saisie manuelle</li>
+          </ul>
+          <button type="button" class="btn-ghost price-cta">Déployer ce système</button>
+        </div>
+
+        <!-- Reporting -->
+        <div class="price-card will-reveal">
+          <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 20V4M4 20h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <rect x="8" y="12" width="3" height="5" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="14" y="8" width="3" height="9" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </span>
+          <p class="label price-eyebrow">Pilotage</p>
+          <h3 class="price-name">Reporting Automatisé</h3>
+          <div class="price-row">
+            <div class="price-col">
+              <span class="price-prefix">à partir de</span>
+              <div class="price-figs">
+                <span class="price-num">690&nbsp;€</span>
+                <span class="price-unit">· mise en place</span>
+              </div>
+            </div>
+          </div>
+          <ul class="price-list">
+            <li>Consolidation de vos données multi-sources</li>
+            <li>Tableaux de bord actualisés en continu</li>
+            <li>Rapports envoyés automatiquement</li>
+            <li>Vos KPIs, toujours à jour</li>
+          </ul>
+          <button type="button" class="btn-ghost price-cta">Déployer ce système</button>
+        </div>
+
+        <!-- Sur mesure -->
+        <div class="price-card will-reveal">
+          <span class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 8h9M18 8h1M5 16h1M10 16h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="16" cy="8" r="2.2" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="8" cy="16" r="2.2" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </span>
           <p class="label price-eyebrow">Grande échelle</p>
-          <h3 class="price-name">Projets Sur Mesure</h3>
+          <h3 class="price-name">Automatisation Sur Mesure</h3>
           <div class="price-row">
-            <span class="price-num">Sur devis</span>
+            <div class="price-col">
+              <span class="price-prefix">tarif</span>
+              <div class="price-figs">
+                <span class="price-num">Sur devis</span>
+              </div>
+            </div>
           </div>
           <ul class="price-list">
-            <li>Agents IA dédiés sur mesure</li>
-            <li>Automatisation de workflows complexes</li>
-            <li>Proposition chiffrée précise</li>
-            <li>Basée sur l'audit de vos besoins</li>
+            <li>Un workflow unique, propre à votre métier</li>
+            <li>Conception &amp; développement dédiés</li>
+            <li>Intégration à vos outils existants</li>
+            <li>Chiffrage précis issu de votre audit</li>
           </ul>
           <button type="button" class="btn-ghost price-cta">Demander un devis</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ SITE INTERNET ══════════════════════════ -->
+  <section id="web-section" style="padding:24px 32px 0;position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto">
+
+      <div class="grid-head will-reveal" style="margin-bottom:26px">
+        <p class="section-eyebrow">Présence en ligne</p>
+        <h2 class="section-title">Votre site internet</h2>
+        <p class="section-sub">
+          L'automatisation muscle vos coulisses. Votre site, lui, transforme vos visiteurs en
+          clients — encore faut-il qu'il soit à la hauteur.
+        </p>
+      </div>
+
+      <div class="web-band will-reveal">
+        <div class="web-glow" aria-hidden="true"></div>
+
+        <div class="web-left">
+          <p class="label">Design &amp; Développement web</p>
+          <h3 class="web-title">Impressionner.<br /><em>Convertir.</em></h3>
+          <p class="web-desc">
+            Un site daté fait fuir vos prospects. Nous concevons des expériences web haut de gamme,
+            pensées pour convertir — et visibles partout : sur Google comme dans les réponses de
+            ChatGPT ou Perplexity.
+          </p>
+
+          <div class="web-chips">
+            <span class="web-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M4 7.5l8 4.5 8-4.5M12 12v9" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>3D immersive
+            </span>
+            <span class="web-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 5h16l-6 7v6l-4 2v-8L4 5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>Pensé pour convertir
+            </span>
+            <span class="web-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M20 20l-3.6-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M9 11h4M11 9v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>SEO technique
+            </span>
+            <span class="web-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3l1.7 5.1 5.3 1.9-5.3 1.9L12 17l-1.7-5.1L5 10l5.3-1.9L12 3z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                <path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+              </svg>Référencement IA (AEO)
+            </span>
+          </div>
+
+          <div class="web-foot">
+            <div class="web-price">
+              <span class="p">à partir de 2&nbsp;500&nbsp;€</span>
+              <span class="u">projet clé en main · sur devis</span>
+            </div>
+            <button type="button" class="btn-light">
+              Concevoir mon site
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="web-right" aria-hidden="true">
+          <canvas id="web-canvas" class="web-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ MAINTENANCE ══════════════════════════ -->
+  <section id="maint-section" style="padding:72px 32px 24px;position:relative;z-index:1">
+    <div style="max-width:1200px;margin:0 auto">
+
+      <div class="grid-head will-reveal" style="margin-bottom:30px">
+        <p class="section-eyebrow">Optionnel · sans engagement</p>
+        <h2 class="section-title">Maintenance &amp; suivi</h2>
+        <p class="section-sub">
+          Vos automatisations et votre site restent performants dans le temps. Nos formules de
+          suivi, sans engagement, s'ajustent à votre rythme.
+        </p>
+      </div>
+
+      <div class="maint-grid">
+
+        <div class="maint-card will-reveal">
+          <h4 class="maint-name">Essentiel</h4>
+          <div class="maint-price"><b>79&nbsp;€</b><span>/ mois</span></div>
+          <ul class="maint-list">
+            <li>Hébergement &amp; supervision</li>
+            <li>Corrections &amp; mises à jour</li>
+            <li>Sauvegardes régulières</li>
+            <li>Support sous 48&nbsp;h</li>
+          </ul>
+        </div>
+
+        <div class="maint-card pick will-reveal">
+          <span class="maint-tag">Le plus choisi</span>
+          <h4 class="maint-name">Croissance</h4>
+          <div class="maint-price"><b>189&nbsp;€</b><span>/ mois</span></div>
+          <ul class="maint-list">
+            <li>Tout l'Essentiel, inclus</li>
+            <li>Optimisations continues</li>
+            <li>Petites évolutions incluses</li>
+            <li>Support prioritaire sous 24&nbsp;h</li>
+          </ul>
+        </div>
+
+        <div class="maint-card will-reveal">
+          <h4 class="maint-name">Sérénité</h4>
+          <div class="maint-price"><b>349&nbsp;€</b><span>/ mois</span></div>
+          <ul class="maint-list">
+            <li>Tout Croissance, inclus</li>
+            <li>Évolutions &amp; automatisations légères</li>
+            <li>Accompagnement dédié</li>
+            <li>Reporting mensuel</li>
+          </ul>
         </div>
 
       </div>
@@ -534,7 +1185,7 @@
       </h2>
 
       <a href="mailto:contact@ds-intelligence.fr" class="btn-primary" style="font-size:16px;padding:16px 40px">
-        Réserver mon atelier initial (60 €)
+        Demander mon audit (0 € aujourd'hui)
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -727,6 +1378,132 @@
         document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; orb.style.opacity = '1' })
       }
     }
+  </script>
+
+  <!-- ── Sphère-réseau neuronale (canvas 3D, section Site internet) ── -->
+  <script>
+  ;(function(){
+    var canvas = document.getElementById('web-canvas')
+    if (!canvas || !canvas.getContext) return
+    var ctx = canvas.getContext('2d')
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    var DPR = Math.min(window.devicePixelRatio || 1, 2)
+
+    var size = 320, cx = 160, cy = 160, R = 96, F = 2.2
+    function resize(){
+      var rect = canvas.getBoundingClientRect()
+      size = Math.max(1, rect.width)
+      canvas.width  = Math.round(size * DPR)
+      canvas.height = Math.round(size * DPR)
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0)
+      cx = size / 2; cy = size / 2; R = size * 0.30
+    }
+
+    /* Points répartis uniformément sur une sphère (spirale de Fibonacci) */
+    var N = 82, base = []
+    for (var i = 0; i < N; i++){
+      var y = 1 - (i / (N - 1)) * 2
+      var rr = Math.sqrt(Math.max(0, 1 - y * y))
+      var phi = i * Math.PI * (3 - Math.sqrt(5))
+      base.push({ x: Math.cos(phi) * rr, y: y, z: Math.sin(phi) * rr })
+    }
+    /* Arêtes : chaque nœud relié à ses 3 plus proches voisins */
+    var edges = [], eset = {}
+    for (var a = 0; a < N; a++){
+      var ds = []
+      for (var b = 0; b < N; b++){ if (b === a) continue
+        var dx = base[a].x - base[b].x, dy = base[a].y - base[b].y, dz = base[a].z - base[b].z
+        ds.push([dx*dx + dy*dy + dz*dz, b]) }
+      ds.sort(function(u, v){ return u[0] - v[0] })
+      for (var j = 0; j < 3; j++){
+        var bb = ds[j][1], key = a < bb ? a + '_' + bb : bb + '_' + a
+        if (!eset[key]){ eset[key] = 1; edges.push([a, bb]) }
+      }
+    }
+    /* Impulsions de données qui circulent le long des arêtes */
+    var pulses = []
+    for (var q = 0; q < 7; q++) pulses.push({ e: (Math.random() * edges.length) | 0, t: Math.random(), s: 0.005 + Math.random() * 0.008 })
+
+    var rx = new Array(N), ry = new Array(N), rz = new Array(N)
+    var px = new Array(N), py = new Array(N), pp = new Array(N)
+    var angY = 0.5, angX = -0.32
+
+    function lerp(a, b, t){ return a + (b - a) * t }
+    function col(t, al){
+      t = t < 0 ? 0 : t > 1 ? 1 : t
+      var r = Math.round(106 + (0 - 106) * t), g = Math.round(92 + (178 - 92) * t)
+      return 'rgba(' + r + ',' + g + ',255,' + al + ')'
+    }
+
+    function draw(){
+      ctx.clearRect(0, 0, size, size)
+      var cY = Math.cos(angY), sY = Math.sin(angY), cX = Math.cos(angX), sX = Math.sin(angX)
+      for (var i = 0; i < N; i++){
+        var p = base[i]
+        var x1 = p.x * cY - p.z * sY, z1 = p.x * sY + p.z * cY, y1 = p.y
+        var y2 = y1 * cX - z1 * sX, z2 = y1 * sX + z1 * cX
+        rx[i] = x1; ry[i] = y2; rz[i] = z2
+        var persp = F / (F - z2 * 0.85)
+        px[i] = cx + x1 * R * persp; py[i] = cy + y2 * R * persp; pp[i] = persp
+      }
+      /* arêtes */
+      ctx.lineWidth = 1
+      for (var e = 0; e < edges.length; e++){
+        var A = edges[e][0], B = edges[e][1]
+        var depth = ((rz[A] + rz[B]) * 0.5 + 1) / 2
+        var mt = ((px[A] + px[B]) * 0.5) / size
+        ctx.strokeStyle = col(mt, 0.06 + depth * 0.4)
+        ctx.beginPath(); ctx.moveTo(px[A], py[A]); ctx.lineTo(px[B], py[B]); ctx.stroke()
+      }
+      /* nœuds, dessinés du plus lointain au plus proche */
+      var order = []; for (var n = 0; n < N; n++) order.push(n)
+      order.sort(function(u, v){ return rz[u] - rz[v] })
+      for (var o = 0; o < N; o++){
+        var idx = order[o], depth = (rz[idx] + 1) / 2, t = px[idx] / size
+        ctx.beginPath()
+        ctx.fillStyle = col(t, 0.35 + depth * 0.6)
+        if (depth > 0.5){ ctx.shadowBlur = 9 * pp[idx]; ctx.shadowColor = col(t, 0.85) } else { ctx.shadowBlur = 0 }
+        ctx.arc(px[idx], py[idx], 1.35 * pp[idx], 0, 6.2832); ctx.fill()
+      }
+      ctx.shadowBlur = 0
+      /* impulsions */
+      for (var u = 0; u < pulses.length; u++){
+        var pl = pulses[u], ed = edges[pl.e]
+        var x = lerp(rx[ed[0]], rx[ed[1]], pl.t), y = lerp(ry[ed[0]], ry[ed[1]], pl.t), z = lerp(rz[ed[0]], rz[ed[1]], pl.t)
+        var persp = F / (F - z * 0.85)
+        ctx.beginPath()
+        ctx.fillStyle = 'rgba(150,225,255,0.98)'
+        ctx.shadowBlur = 13; ctx.shadowColor = 'rgba(0,200,255,0.95)'
+        ctx.arc(cx + x * R * persp, cy + y * R * persp, 1.8 * persp, 0, 6.2832); ctx.fill()
+      }
+      ctx.shadowBlur = 0
+    }
+
+    var raf, running = false
+    function loop(){
+      if (!running) return
+      angY += 0.0036
+      angX = -0.32 + Math.sin(angY * 0.5) * 0.16
+      for (var u = 0; u < pulses.length; u++){
+        pulses[u].t += pulses[u].s
+        if (pulses[u].t > 1){ pulses[u].t = 0; pulses[u].e = (Math.random() * edges.length) | 0; pulses[u].s = 0.005 + Math.random() * 0.008 }
+      }
+      draw(); raf = requestAnimationFrame(loop)
+    }
+    function play(){ if (running || reduced) return; running = true; raf = requestAnimationFrame(loop) }
+    function pause(){ running = false; cancelAnimationFrame(raf) }
+
+    resize()
+    if (reduced){ draw() }
+    else if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ es.forEach(function(en){ en.isIntersecting ? play() : pause() }) }, { threshold: 0.04 }).observe(canvas)
+    } else { play() }
+
+    var rt
+    window.addEventListener('resize', function(){
+      clearTimeout(rt); rt = setTimeout(function(){ resize(); if (reduced || !running) draw() }, 150)
+    }, { passive: true })
+  })()
   </script>
 
 </body>

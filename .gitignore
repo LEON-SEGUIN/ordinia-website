@@ -3,3 +3,5 @@ temporary screenshots/
 .DS_Store
 .claude/
 *.log
+.env
+
