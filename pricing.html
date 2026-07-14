@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>D&S Intelligence — Tarifs</title>
-  <meta name="description" content="Investissements & tarification D&S Intelligence — une approche transparente et progressive. Vous ne payez que pour la valeur immédiate, à votre rythme." />
+  <meta name="description" content="Investissements & tarification D&S Intelligence. Une approche transparente et progressive. Vous ne payez que pour la valeur immédiate, à votre rythme." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -244,11 +244,6 @@
       animation: gradShift 6s linear infinite;
       -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; color: transparent;
-    }
-    .price-unit {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12.5px;
-      color: var(--muted);
     }
     .price-desc {
       color: var(--muted);
@@ -557,7 +552,7 @@
         z-index: 9998;
         transform: translate(-50%, -50%);
         opacity: 1;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.2s ease, background-color 0.22s ease;
       }
       #cursor-orb {
         position: fixed; top: 0; left: 0;
@@ -580,6 +575,20 @@
                     inset 0 0 14px rgba(106,92,255,0.08);
       }
       body.cursor-hover #cursor-dot { opacity: 0.3; }
+
+      /* Sur la bande sombre (Site internet), le curseur passe en clair —
+         sinon le dot (var(--text), quasi noir) disparaît dans le fond. */
+      body.cursor-light #cursor-dot { background: #fff; }
+      body.cursor-light #cursor-orb {
+        border-color: rgba(255,255,255,0.45);
+        box-shadow: 0 0 14px 2px rgba(255,255,255,0.07),
+                    inset 0 0 10px rgba(255,255,255,0.05);
+      }
+      body.cursor-light.cursor-hover #cursor-orb {
+        border-color: rgba(255,255,255,0.72);
+        box-shadow: 0 0 26px 5px rgba(255,255,255,0.15),
+                    inset 0 0 14px rgba(255,255,255,0.09);
+      }
     }
     @media (pointer: coarse) {
       #cursor-dot, #cursor-orb { display: none; }
@@ -751,13 +760,12 @@
   <!-- ══════════════════════════ HEADER ══════════════════════════ -->
   <section id="pricing-header" style="padding:120px 32px 52px;position:relative;z-index:1">
     <div style="max-width:1200px;margin:0 auto;position:relative;z-index:1">
-      <p class="label will-reveal" style="margin-bottom:28px">Tarification</p>
       <h1 class="h-display will-reveal" style="font-size:clamp(2.3rem,5.2vw,4.4rem);max-width:900px;margin-bottom:34px">
         On diagnostique.<br />Puis on automatise.
       </h1>
       <p class="will-reveal" style="font-size:clamp(1rem,1.6vw,1.18rem);color:var(--muted);max-width:640px;line-height:1.75;font-weight:300">
         Chaque collaboration démarre par un audit de votre infrastructure. C'est lui qui
-        révèle les automatisations les plus rentables pour vous — avant que vous n'engagiez
+        révèle les automatisations les plus rentables pour vous, avant que vous n'engagiez
         le moindre euro.
       </p>
     </div>
@@ -768,7 +776,7 @@
     <div style="max-width:1200px;margin:0 auto">
       <div class="audit-wrap will-reveal">
         <div class="audit-badge">
-          <span class="dot"></span>Étape 01 · Le point de départ
+          <span class="dot"></span>Étape 01, le point de départ
         </div>
 
         <div class="audit-card">
@@ -783,7 +791,7 @@
                 <span class="audit-price">0&nbsp;€</span>
                 <span class="audit-price-sub">
                   d'avance à engager<br />
-                  <span class="audit-strike">Valeur&nbsp;800&nbsp;€</span> — facturé sur validation
+                  <span class="audit-strike">Valeur&nbsp;800&nbsp;€</span>, facturé sur validation
                 </span>
               </div>
 
@@ -793,7 +801,7 @@
                   <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
                   <path d="M8.5 12.2l2.4 2.4 4.6-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span>L'audit (800&nbsp;€) n'est facturé qu'à la validation du projet — puis intégré
+                <span>L'audit (800&nbsp;€) n'est facturé qu'à la validation du projet, puis intégré
                 à votre plan d'automatisation. Zéro risque, zéro avance.</span>
               </div>
 
@@ -860,9 +868,9 @@
         <p class="section-eyebrow">Automatisations</p>
         <h2 class="section-title">Les plus demandées</h2>
         <p class="section-sub">
-          Chaque automatisation est conçue sur mesure, autour de votre métier et de vos outils —
-          jamais une solution sortie d'un catalogue. Voici celles que nos clients nous demandent
-          le plus&nbsp;; si la vôtre n'y figure pas, nous la construisons pour vous. Les tarifs indiqués
+          Chaque automatisation est conçue sur mesure, autour de votre métier et de vos outils.
+          Jamais une solution sortie d'un catalogue. Voici celles que nos clients nous demandent
+          le plus. Si la vôtre n'y figure pas, nous la construisons pour vous. Les tarifs indiqués
           correspondent à la mise en place.
         </p>
       </div>
@@ -882,10 +890,9 @@
           <h3 class="price-name">Comptes-Rendus Intelligents</h3>
           <div class="price-row">
             <div class="price-col">
-              <span class="price-prefix">à partir de</span>
+              <span class="price-prefix">mise en place à partir de</span>
               <div class="price-figs">
-                <span class="price-num">690&nbsp;€</span>
-                <span class="price-unit">· mise en place</span>
+                <span class="price-num">890&nbsp;€</span>
               </div>
             </div>
           </div>
@@ -911,10 +918,9 @@
           <h3 class="price-name">Lead Gen &amp; Prospection</h3>
           <div class="price-row">
             <div class="price-col">
-              <span class="price-prefix">à partir de</span>
+              <span class="price-prefix">mise en place à partir de</span>
               <div class="price-figs">
-                <span class="price-num">890&nbsp;€</span>
-                <span class="price-unit">· mise en place</span>
+                <span class="price-num">1&nbsp;490&nbsp;€</span>
               </div>
             </div>
           </div>
@@ -939,10 +945,9 @@
           <h3 class="price-name">Support Client IA 24/7</h3>
           <div class="price-row">
             <div class="price-col">
-              <span class="price-prefix">à partir de</span>
+              <span class="price-prefix">mise en place à partir de</span>
               <div class="price-figs">
-                <span class="price-num">990&nbsp;€</span>
-                <span class="price-unit">· mise en place</span>
+                <span class="price-num">1&nbsp;890&nbsp;€</span>
               </div>
             </div>
           </div>
@@ -968,10 +973,9 @@
           <h3 class="price-name">Traitement Documentaire</h3>
           <div class="price-row">
             <div class="price-col">
-              <span class="price-prefix">à partir de</span>
+              <span class="price-prefix">mise en place à partir de</span>
               <div class="price-figs">
-                <span class="price-num">790&nbsp;€</span>
-                <span class="price-unit">· mise en place</span>
+                <span class="price-num">1&nbsp;190&nbsp;€</span>
               </div>
             </div>
           </div>
@@ -997,10 +1001,9 @@
           <h3 class="price-name">Reporting Automatisé</h3>
           <div class="price-row">
             <div class="price-col">
-              <span class="price-prefix">à partir de</span>
+              <span class="price-prefix">mise en place à partir de</span>
               <div class="price-figs">
-                <span class="price-num">690&nbsp;€</span>
-                <span class="price-unit">· mise en place</span>
+                <span class="price-num">890&nbsp;€</span>
               </div>
             </div>
           </div>
@@ -1054,7 +1057,7 @@
         <h2 class="section-title">Votre site internet</h2>
         <p class="section-sub">
           L'automatisation muscle vos coulisses. Votre site, lui, transforme vos visiteurs en
-          clients — encore faut-il qu'il soit à la hauteur.
+          clients. Encore faut-il qu'il soit à la hauteur.
         </p>
       </div>
 
@@ -1066,7 +1069,7 @@
           <h3 class="web-title">Impressionner.<br /><em>Convertir.</em></h3>
           <p class="web-desc">
             Un site daté fait fuir vos prospects. Nous concevons des expériences web haut de gamme,
-            pensées pour convertir — et visibles partout : sur Google comme dans les réponses de
+            pensées pour convertir, et visibles partout : sur Google comme dans les réponses de
             ChatGPT ou Perplexity.
           </p>
 
@@ -1100,7 +1103,7 @@
           <div class="web-foot">
             <div class="web-price">
               <span class="p">à partir de 2&nbsp;500&nbsp;€</span>
-              <span class="u">projet clé en main · sur devis</span>
+              <span class="u">projet clé en main, sur devis</span>
             </div>
             <button type="button" class="btn-light">
               Concevoir mon site
@@ -1123,7 +1126,7 @@
     <div style="max-width:1200px;margin:0 auto">
 
       <div class="grid-head will-reveal" style="margin-bottom:30px">
-        <p class="section-eyebrow">Optionnel · sans engagement</p>
+        <p class="section-eyebrow">Optionnel, sans engagement</p>
         <h2 class="section-title">Maintenance &amp; suivi</h2>
         <p class="section-sub">
           Vos automatisations et votre site restent performants dans le temps. Nos formules de
@@ -1373,6 +1376,17 @@
         document.querySelectorAll('a, button, .price-card, .btn-primary, .btn-ghost').forEach(el => {
           el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'))
           el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'))
+        })
+        document.querySelectorAll('.web-band').forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('cursor-light'))
+          el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-light'))
+        })
+        // Le bouton blanc de la bande sombre : on redevient sombre, sinon blanc sur blanc.
+        // mouseenter descend (bande puis bouton) et mouseleave remonte (bouton puis bande),
+        // donc l'état reste juste quelle que soit la trajectoire de la souris.
+        document.querySelectorAll('.web-band .btn-light').forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.remove('cursor-light'))
+          el.addEventListener('mouseleave', () => document.body.classList.add('cursor-light'))
         })
         document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; orb.style.opacity = '0' })
         document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; orb.style.opacity = '1' })
