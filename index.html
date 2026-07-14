@@ -301,6 +301,41 @@
       flex-shrink: 0;
     }
 
+    /* ── Trust line (hero) ───────────────────────────── */
+    .trust-line {
+      display: flex; align-items: center; gap: 11px; flex-wrap: wrap;
+      margin-top: 34px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .trust-line svg { width: 15px; height: 15px; flex-shrink: 0; overflow: visible; }
+    .trust-sep { color: rgba(106,92,255,0.55); }   /* --border disparaît sur l'aurora */
+
+    /* ── Security band ───────────────────────────────── */
+    .sec-band {
+      border: 1px solid var(--border);
+      border-top: 0;                       /* partage la hairline de la grille du dessus */
+      background:
+        linear-gradient(90deg, rgba(106,92,255,0.055), rgba(0,178,255,0.04)),
+        var(--surface);
+      padding: 44px 40px;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap: 40px 56px;
+      align-items: center;
+    }
+    .sec-band-head { display: flex; gap: 20px; align-items: flex-start; }
+    .sec-band-head svg {
+      width: 30px; height: 30px; flex-shrink: 0; overflow: visible;
+      animation: iconFloat 5s ease-in-out infinite;
+    }
+    /* Tirets alignés sur la 1re ligne, même quand la puce passe à la ligne */
+    .sec-band .check-list li { align-items: flex-start; line-height: 1.6; }
+    .sec-band .check-list li::before { margin-top: 10px; }
+
     /* ── Why card ────────────────────────────────────── */
     .why-card {
       background: var(--surface);
@@ -615,6 +650,22 @@
       .why-card h3        { font-size: 0.98rem !important; margin-bottom: 0 !important; line-height: 1.25 !important; }
       .why-card p         { display: none !important; }
 
+      /* ── Bande sécurité ─────────────────────────────────────────── */
+      .trust-line { margin-top: 26px !important; gap: 8px !important;
+                    font-size: 10px !important; letter-spacing: 0.12em !important; }
+      .trust-line svg { width: 13px !important; height: 13px !important; }
+      .sec-band { grid-template-columns: 1fr !important; gap: 22px !important;
+                  padding: 26px 20px !important; }
+      .sec-band-head { gap: 14px !important; }
+      .sec-band-head svg { width: 24px !important; height: 24px !important; }
+      .sec-band-head .label { margin-bottom: 9px !important;
+                              font-size: 10px !important; letter-spacing: 0.14em !important; }
+      .sec-band-head h3 { font-size: 0.98rem !important; line-height: 1.35 !important; }
+      .sec-band .check-list { gap: 11px !important; }
+      .sec-band .check-list li { font-size: 11.5px !important; align-items: flex-start !important;
+                                 line-height: 1.55 !important; gap: 12px !important; }
+      .sec-band .check-list li::before { margin-top: 9px !important; width: 12px !important; }
+
       /* ── CTA ────────────────────────────────────────────────────── */
       #contact          { padding: 66px 22px !important; }
       #cta-block .label { margin-bottom: 20px !important; }
@@ -858,6 +909,20 @@
         </a>
         <a href="#process" class="btn-ghost">Découvrir notre approche</a>
       </div>
+
+      <!-- Trust line — signal de sécurité -->
+      <p class="will-reveal trust-line" id="hero-trust">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#cg)" stroke-width="1.7"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span>Cloud sécurisé</span>
+        <span class="trust-sep" aria-hidden="true">/</span>
+        <span>Données chiffrées</span>
+        <span class="trust-sep m-hide" aria-hidden="true">/</span>
+        <span class="m-hide">Vos données restent les vôtres</span>
+      </p>
     </div>
 
     <!-- Scroll cue -->
@@ -933,8 +998,8 @@
           </h3>
           <p style="color:var(--muted);font-size:14.5px;line-height:1.8;font-weight:300">
             <span class="m-hide">On construit vos automatisations. Finies les tâches manuelles interminables.
-            Nous développons des systèmes qui s'intègrent à vos outils existants et font
-            le travail à votre place.</span><span class="m-only">On construit des automatisations qui s'intègrent à vos outils et font le travail à votre place.</span>
+            Nous développons des systèmes qui s'intègrent à vos outils existants, hébergés
+            sur un cloud sécurisé, et qui font le travail à votre place.</span><span class="m-only">On construit des automatisations sécurisées qui s'intègrent à vos outils et font le travail à votre place.</span>
           </p>
         </div>
 
@@ -1151,6 +1216,32 @@
             Nous définissons des objectifs clairs avant de commencer, pour que vous sachiez exactement ce que chaque système vous rapporte.
           </p>
         </div>
+
+      </div>
+
+      <!-- Bande sécurité — collée sous la grille, partage sa hairline -->
+      <div class="sec-band will-reveal">
+
+        <div class="sec-band-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="url(#cg)" stroke-width="1.6"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <div>
+            <p class="label" style="margin-bottom:12px">Sécurité &amp; confidentialité</p>
+            <h3 class="font-heading"
+                style="font-size:1.15rem;font-weight:700;letter-spacing:-.015em;line-height:1.4">
+              Vos automatisations tournent sur un cloud sécurisé, pas sur un poste de bureau.
+            </h3>
+          </div>
+        </div>
+
+        <ul class="check-list">
+          <li>Hébergement cloud sécurisé, connexions chiffrées</li>
+          <li>Accès cloisonnés, identifiants dans un coffre chiffré</li>
+          <li>Vos données ne servent jamais à entraîner de modèles publics</li>
+        </ul>
 
       </div>
     </div>
