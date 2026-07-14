@@ -399,18 +399,54 @@
     .proc-card-wrap {
       position: relative;
       height: 340px;
+      perspective: 1400px;
+    }
+    /* The three cards are the three faces of a triangular prism. Advancing
+       rotates the whole solid 120°, like a Rolodex. Mid-turn you see two
+       faces meet at a hard 3D edge — that's what sells it as a real object. */
+    #proc-prism {
+      position: absolute; inset: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
     .proc-card {
       position: absolute; inset: 0;
+      overflow: hidden;
       border-radius: 3px;
       padding: 48px 44px;
       border: 1px solid transparent;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
       background:
         linear-gradient(var(--surface2), var(--surface2)) padding-box,
         linear-gradient(155deg, rgba(106,92,255,0.35), rgba(0,178,255,0.15) 45%, rgba(230,232,236,0.9) 85%) border-box;
       box-shadow:
         0 34px 70px -30px rgba(106,92,255,0.22),
         0 10px 26px -8px rgba(13,13,18,0.06);
+    }
+    /* Light raking across the surface as the card turns. A white specular
+       highlight would be invisible on a white card, so the sheen is drawn
+       in the brand's indigo→cyan — it reads as iridescent foil. */
+    .proc-sheen {
+      position: absolute; inset: 0;
+      z-index: 3;
+      opacity: 0;
+      pointer-events: none;
+      background: linear-gradient(100deg,
+        rgba(106,92,255,0)    32%,
+        rgba(106,92,255,0.20) 44%,
+        rgba(0,178,255,0.26)  52%,
+        rgba(0,178,255,0)     66%);
+    }
+    /* Light falls off as a face turns away from the camera. Without this the
+       prism reads as flat panels rather than a solid catching the light. */
+    .proc-shade {
+      position: absolute; inset: 0;
+      z-index: 4;
+      opacity: 0;
+      pointer-events: none;
+      background: linear-gradient(to bottom,
+        rgba(16,18,30,0.58), rgba(16,18,30,0.34));
     }
 
     /* Mobile: disable sticky, stack everything */
@@ -423,16 +459,22 @@
         align-items: flex-start !important;
       }
       .proc-col-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
-      .proc-card-wrap { position: static !important; height: auto !important; display: flex; flex-direction: column; gap: 12px; }
+      .proc-card-wrap { position: static !important; height: auto !important; perspective: none !important; }
+      #proc-prism { position: static !important; transform: none !important; transform-style: flat !important;
+                      display: flex; flex-direction: column; gap: 12px; }
       .proc-card { position: static !important; opacity: 1 !important; transform: none !important; }
+      .proc-sheen, .proc-shade { display: none !important; }
       #proc-label, #proc-h2 { opacity: 1 !important; transform: none !important; }
       #proc-bar-wrap { display: none !important; }
     }
     @media (prefers-reduced-motion: reduce) {
       #process { height: auto !important; }
       #proc-sticky { position: static !important; height: auto !important; padding: 80px 32px !important; }
-      .proc-card-wrap { position: static !important; height: auto !important; display: flex; flex-direction: column; gap: 12px; }
+      .proc-card-wrap { position: static !important; height: auto !important; perspective: none !important; }
+      #proc-prism { position: static !important; transform: none !important; transform-style: flat !important;
+                      display: flex; flex-direction: column; gap: 12px; }
       .proc-card { position: static !important; opacity: 1 !important; transform: none !important; }
+      .proc-sheen, .proc-shade { display: none !important; }
       #proc-label, #proc-h2 { opacity: 1 !important; transform: none !important; }
       #proc-bar-wrap { display: none !important; }
     }
@@ -915,7 +957,7 @@
   </section>
 
   <!-- ══════════════════════════ PROCESS (Sticky Scroll) ══════════════════════════ -->
-  <section id="process" style="position:relative;height:380vh;border-top:1px solid var(--border)">
+  <section id="process" style="position:relative;height:280vh;border-top:1px solid var(--border)">
 
     <div id="proc-sticky"
          style="position:sticky;top:0;height:100vh;overflow:hidden;
@@ -994,9 +1036,12 @@
 
         <!-- RIGHT: step cards ─────────────────────── -->
         <div class="proc-card-wrap">
+          <div id="proc-prism">
 
           <div class="proc-card" data-step="0"
-               style="opacity:0;transform:translateY(52px) scale(0.96)">
+               style="opacity:0">
+            <div class="proc-sheen" aria-hidden="true"></div>
+            <div class="proc-shade" aria-hidden="true"></div>
             <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
                  line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">01</div>
@@ -1010,7 +1055,9 @@
           </div>
 
           <div class="proc-card" data-step="1"
-               style="opacity:0;transform:translateY(52px) scale(0.96)">
+               style="opacity:0">
+            <div class="proc-sheen" aria-hidden="true"></div>
+            <div class="proc-shade" aria-hidden="true"></div>
             <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
                  line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">02</div>
@@ -1024,7 +1071,9 @@
           </div>
 
           <div class="proc-card" data-step="2"
-               style="opacity:0;transform:translateY(52px) scale(0.96)">
+               style="opacity:0">
+            <div class="proc-sheen" aria-hidden="true"></div>
+            <div class="proc-shade" aria-hidden="true"></div>
             <div class="grad-text" style="font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:500;
                  line-height:1;margin-bottom:30px;user-select:none"
                  aria-hidden="true">03</div>
@@ -1037,6 +1086,7 @@
             </p>
           </div>
 
+          </div>
         </div>
       </div>
 
@@ -1353,6 +1403,7 @@
 
       if (window.innerWidth >= 768) {
         const procSection = document.getElementById('process')
+        const procPrism = document.getElementById('proc-prism')
         const procCards   = [...document.querySelectorAll('.proc-card')]
         const procTabs    = [...document.querySelectorAll('.proc-tab')]
         const procLabel   = document.getElementById('proc-label')
@@ -1361,22 +1412,74 @@
         let activeProcStep = -1
         let procIntroDone  = false
 
+        /* ── The three cards are the faces of a triangular prism ───────────
+           Advancing rotates the whole solid by one third of a turn. Weighty
+           ease-in-out, never a spring: bounce is what reads as cheap. */
+        const TURN    = [0.76, 0.0, 0.24, 1.0]
+        const SHEEN_E = [0.4, 0.0, 0.2, 1.0]
+        const TURN_S  = 1.15                       /* seconds */
+        const FACES   = procCards.length           /* 3 */
+        const SECTOR  = 360 / FACES                /* 120° per face */
+        const SHADE   = 0.62                       /* darkness of a face turned away */
+
+        /* How far each face sits from the axis: the inradius of an equilateral
+           triangle whose side is the card's height. Get this wrong and the
+           faces don't meet — the solid comes apart at the edges. */
+        const CARD_H  = procCards[0].offsetHeight || 340
+        const RADIUS  = CARD_H / (2 * Math.tan(Math.PI / FACES))
+
+        let spin = 0                               /* prism angle, multiple of 120° */
+
+        /* Build the solid: face i is swung to its sector and pushed out to the
+           surface. The prism is pulled back by the same radius, so whichever
+           face is front lands exactly on the flat plane — same size and
+           position a plain card would have had. */
+        procCards.forEach((card, i) => {
+          card.style.transform = 'rotateX(' + (i * SECTOR) + 'deg) translateZ(' + RADIUS + 'px)'
+          const shade = card.querySelector('.proc-shade')
+          if (shade) shade.style.opacity = (i === 0) ? '0' : String(SHADE)
+        })
+        /* backface-visibility hides whichever faces point away, so exactly one
+           face is visible at rest — and two, meeting at an edge, mid-turn. */
+
         function setProcStep(step) {
           if (step === activeProcStep) return
           const prev = activeProcStep
           activeProcStep = step
 
-          /* Card transition: outgoing slides up, incoming slides in */
-          if (prev >= 0 && procCards[prev]) {
-            animate(procCards[prev],
-              { opacity: [1, 0], y: [0, -28], scale: [1, 1.02] },
-              { duration: 0.38, easing: OUT }
+          if (prev === -1) {
+            /* Intro: the solid dollies in out of depth. */
+            animate(procPrism,
+              { z: [-RADIUS - 300, -RADIUS], rotateX: 0 },
+              { duration: 1.0, easing: [0.16, 1, 0.3, 1] }
             )
-          }
-          if (procCards[step]) {
-            animate(procCards[step],
-              { opacity: [0, 1], y: [52, 0], scale: [0.96, 1] },
-              { duration: 0.65, easing: PREMIUM }
+            animate(procCards, { opacity: [0, 1] }, { duration: 0.7, easing: OUT })
+          } else {
+            /* Turn to bring face `step` to the front; unwind the other way when
+               scrolling back up so the solid never spins the wrong direction. */
+            spin = -step * SECTOR
+
+            /* rotateX is a single target value, so a turn interrupted by fast
+               scrolling eases on from its true angle instead of snapping.
+               The prism also dollies toward the camera through the middle of
+               the arc, which is what gives it weight. */
+            animate(procPrism,
+              { rotateX: spin, z: [-RADIUS, -RADIUS + 130, -RADIUS] },
+              { duration: TURN_S, easing: TURN }
+            )
+
+            /* Light: the outgoing face darkens as it swings away, the incoming
+               face brightens as it comes round to meet you. */
+            const outShade = procCards[prev].querySelector('.proc-shade')
+            const inShade  = procCards[step].querySelector('.proc-shade')
+            if (outShade) animate(outShade, { opacity: SHADE }, { duration: TURN_S, easing: TURN })
+            if (inShade)  animate(inShade,  { opacity: 0 },     { duration: TURN_S, easing: TURN })
+
+            /* …and rakes across the incoming face as it arrives. */
+            const sheen = procCards[step].querySelector('.proc-sheen')
+            if (sheen) animate(sheen,
+              { x: ['-65%', '65%'], opacity: [0, 1, 0] },
+              { duration: TURN_S * 0.7, delay: TURN_S * 0.4, easing: SHEEN_E }
             )
           }
 
@@ -1401,34 +1504,42 @@
           })
         }
 
+        /* Reveal the header + card 01 as the section enters — so the first
+           card is already on screen before the sticky pin engages. Only
+           cards 02 and 03 are then driven by the scroll. */
+        inView(procSection, () => {
+          if (procIntroDone) return
+          procIntroDone = true
+          animate(procLabel, { opacity:[0,1], y:[12,0] }, { duration:0.55, easing:OUT })
+          animate(procH2,    { opacity:[0,1], y:[28,0] }, { duration:0.7, delay:0.08, easing:PREMIUM })
+          setProcStep(0)
+        }, { amount: 0.08 })
+
+        /* Pacing. The turn takes ~1s, so each card needs enough scroll
+           distance for it to play out before the next one triggers —
+           otherwise the cards flip past faster than you can read them.
+           01 gets a shorter hold since it was already on screen while the
+           section scrolled in; 02 and 03 each get a full screen or so. */
+        function procStepFor(p) {
+          if (p < 0.20) return 0
+          if (p < 0.58) return 1
+          return 2
+        }
+
         window.addEventListener('scroll', () => {
           if (!procSection) return
-          const rect    = procSection.getBoundingClientRect()
-          const secH    = procSection.offsetHeight
-          const vh      = window.innerHeight
+          const rect     = procSection.getBoundingClientRect()
+          const total    = procSection.offsetHeight - window.innerHeight
           const scrolled = -rect.top
-          const total    = secH - vh
+          if (total <= 0) return
 
-          if (scrolled < 0 || scrolled > total) return
-
-          const p = scrolled / total  /* 0 → 1 */
+          const p = Math.min(1, Math.max(0, scrolled / total))
 
           /* Progress bar */
           if (procBar) procBar.style.width = (p * 100).toFixed(1) + '%'
 
-          /* Header: animate in once after entering section */
-          if (!procIntroDone && p >= 0.02) {
-            procIntroDone = true
-            animate(procLabel, { opacity:[0,1], y:[12,0] }, { duration:0.5, easing:OUT })
-            animate(procH2,    { opacity:[0,1], y:[28,0] }, { duration:0.7, delay:0.1, easing:PREMIUM })
-          }
-
-          /* 3 steps over the last 95% of scroll (first 5% = header intro) */
-          if (procIntroDone) {
-            const sp   = Math.max(0, (p - 0.05) / 0.95)
-            const step = Math.min(2, Math.floor(sp * 3))
-            setProcStep(step)
-          }
+          /* Card 01 already shown on entry; drive 02/03 once pinned. */
+          if (procIntroDone && scrolled >= 0) setProcStep(procStepFor(p))
         }, { passive: true })
       }
 
