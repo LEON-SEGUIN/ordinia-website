@@ -802,11 +802,16 @@
   <!-- ══════════════════════════ HERO ══════════════════════════ -->
   <section id="hero-section" style="min-height:100vh;position:relative;display:flex;align-items:center;padding:120px 32px 76px">
 
-    <!-- Animated constellation (echoes the D&S network logo) — bleeds down behind the counter -->
+    <!-- Animated replica of the D&S network logo — bleeds down behind the counter -->
     <div style="position:absolute;inset:0;pointer-events:none" aria-hidden="true">
       <div class="rings-float" style="position:absolute;right:1%;top:37vh;
-           width:min(50vw,78vh,690px);height:min(50vw,78vh,690px);opacity:0.9;
-           filter:drop-shadow(0 10px 34px rgba(106,92,255,0.16))">
+           width:min(50vw,78vh,690px);height:min(50vw,78vh,690px);opacity:0.88;
+           filter:saturate(0.94) drop-shadow(0 10px 34px rgba(106,92,255,0.16));
+           -webkit-mask-image:linear-gradient(to bottom,black 78%,transparent 99%);
+           mask-image:linear-gradient(to bottom,black 78%,transparent 99%)">
+        <!-- soft halo so the mark sits in the aurora instead of floating on it -->
+        <div style="position:absolute;inset:-6%;border-radius:50%;
+             background:radial-gradient(closest-side,rgba(106,92,255,0.10),rgba(0,178,255,0.05) 55%,transparent 78%)"></div>
         <svg viewBox="0 0 694 630" fill="none" xmlns="http://www.w3.org/2000/svg"
              width="100%" height="100%" aria-hidden="true">
           <defs>
@@ -818,53 +823,50 @@
 
           <!-- Exact animated replica of the D&S network logo (extracted from the brand PNG) -->
           <g class="lg-breathe">
-            <line class="lg-line" x1="234" y1="295" x2="273" y2="204" stroke="#349ffd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
-            <line class="lg-line" x1="234" y1="295" x2="241" y2="378" stroke="#428efd" stroke-width="3.9" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
-            <line class="lg-line" x1="234" y1="295" x2="144" y2="243" stroke="#6976fb" stroke-width="2.4" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
-            <line class="lg-line" x1="234" y1="295" x2="155" y2="390" stroke="#6572fa" stroke-width="2.1" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
-            <line class="lg-line" x1="234" y1="295" x2="196" y2="178" stroke="#5793fc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
-            <line class="lg-line" x1="251" y1="62" x2="358" y2="50" stroke="#21bafc" stroke-width="2.4" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
-            <line class="lg-line" x1="251" y1="62" x2="193" y2="95" stroke="#2a9dfc" stroke-width="3.8" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
-            <line class="lg-line" x1="251" y1="62" x2="301" y2="101" stroke="#15a4fc" stroke-width="3.3" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
-            <line class="lg-line" x1="273" y1="204" x2="346" y2="143" stroke="#00bbfd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
-            <line class="lg-line" x1="273" y1="204" x2="196" y2="178" stroke="#2aa4fc" stroke-width="2.5" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
-            <line class="lg-line" x1="339" y1="576" x2="302" y2="534" stroke="#4f9ffd" stroke-width="3.5" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
-            <line class="lg-line" x1="339" y1="576" x2="389" y2="535" stroke="#bdc8fc" stroke-width="2.5" stroke-linecap="round" pathLength="1" style="animation-delay:1.4s"/>
-            <line class="lg-line" x1="339" y1="576" x2="300" y2="572" stroke="#6e7bfb" stroke-width="3.5" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
-            <line class="lg-line" x1="304" y1="454" x2="241" y2="378" stroke="#03b3fd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
-            <line class="lg-line" x1="304" y1="454" x2="380" y2="494" stroke="#429cfc" stroke-width="3" stroke-linecap="round" pathLength="1" style="animation-delay:1.4s"/>
-            <line class="lg-line" x1="358" y1="50" x2="353" y2="84" stroke="#01c4fc" stroke-width="4.2" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
-            <line class="lg-line" x1="346" y1="143" x2="260" y2="128" stroke="#a0cafc" stroke-width="2.6" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
-            <line class="lg-line" x1="346" y1="143" x2="301" y2="101" stroke="#08b3fd" stroke-width="3.4" stroke-linecap="round" pathLength="1" style="animation-delay:0.5s"/>
-            <line class="lg-line" x1="241" y1="378" x2="238" y2="417" stroke="#22a7fe" stroke-width="3.9" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
-            <line class="lg-line" x1="517" y1="464" x2="432" y2="496" stroke="#6e6afb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.6s"/>
-            <line class="lg-line" x1="193" y1="95" x2="125" y2="155" stroke="#3a8ffd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
-            <line class="lg-line" x1="193" y1="95" x2="196" y2="178" stroke="#449efb" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
-            <line class="lg-line" x1="125" y1="155" x2="82" y2="232" stroke="#6d78f9" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
-            <line class="lg-line" x1="454" y1="148" x2="371" y2="140" stroke="#28ccfc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
-            <line class="lg-line" x1="82" y1="232" x2="144" y2="243" stroke="#6965f9" stroke-width="2.4" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
-            <line class="lg-line" x1="82" y1="232" x2="71" y2="322" stroke="#8684fa" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.9s"/>
-            <line class="lg-line" x1="144" y1="243" x2="71" y2="322" stroke="#6564fa" stroke-width="3.4" stroke-linecap="round" pathLength="1" style="animation-delay:0.9s"/>
-            <line class="lg-line" x1="144" y1="243" x2="196" y2="178" stroke="#5c80fb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
-            <line class="lg-line" x1="144" y1="243" x2="150" y2="336" stroke="#6665f8" stroke-width="3.7" stroke-linecap="round" pathLength="1" style="animation-delay:0.9s"/>
-            <line class="lg-line" x1="71" y1="322" x2="155" y2="390" stroke="#c2bcfc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
-            <line class="lg-line" x1="71" y1="322" x2="93" y2="419" stroke="#7d7efb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
-            <line class="lg-line" x1="155" y1="390" x2="135" y2="483" stroke="#547bfa" stroke-width="3.5" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
-            <line class="lg-line" x1="155" y1="390" x2="235" y2="496" stroke="#479ffd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
-            <line class="lg-line" x1="155" y1="390" x2="93" y2="419" stroke="#5e65fa" stroke-width="3.9" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
-            <line class="lg-line" x1="155" y1="390" x2="150" y2="336" stroke="#7371fc" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
-            <line class="lg-line" x1="135" y1="483" x2="93" y2="419" stroke="#577afd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
-            <line class="lg-line" x1="235" y1="496" x2="224" y2="549" stroke="#44b1fd" stroke-width="3.1" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
-            <line class="lg-line" x1="235" y1="496" x2="302" y2="534" stroke="#2696fc" stroke-width="3.1" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
-            <line class="lg-line" x1="235" y1="496" x2="237" y2="442" stroke="#0ea1fd" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
-            <line class="lg-line" x1="196" y1="178" x2="260" y2="128" stroke="#44a4fd" stroke-width="2.9" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
-            <line class="lg-line" x1="224" y1="549" x2="300" y2="572" stroke="#4e84fb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
-            <line class="lg-line" x1="432" y1="496" x2="380" y2="494" stroke="#7776f8" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:1.5s"/>
-            <line class="lg-line" x1="380" y1="494" x2="302" y2="534" stroke="#98a2fc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.4s"/>
-            <line class="lg-line" x1="260" y1="128" x2="301" y2="101" stroke="#c7defd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
-            <line class="lg-line" x1="237" y1="442" x2="238" y2="417" stroke="#0da3fe" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
-            <line class="lg-line" x1="353" y1="84" x2="350" y2="107" stroke="#00c2fc" stroke-width="4.1" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
-            <line class="lg-line" x1="350" y1="107" x2="348" y2="123" stroke="#00bffc" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
+            <path class="lg-line" d="M234 295 Q249.1 247.6 273 204" stroke="#36a0fd" stroke-width="2.1" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
+            <path class="lg-line" d="M234 295 Q238.2 336.4 241 378" stroke="#3f8dfd" stroke-width="3.9" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
+            <path class="lg-line" d="M234 295 Q187.5 271.6 144 243" stroke="#6b77fb" stroke-width="2.4" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
+            <path class="lg-line" d="M234 295 Q196.7 344.4 155 390" stroke="#6573fa" stroke-width="2.7" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
+            <path class="lg-line" d="M234 295 Q210.7 237.9 196 178" stroke="#5793fd" stroke-width="2.3" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
+            <path class="lg-line" d="M251 62 Q304.1 52.6 358 50" stroke="#1ebbfc" stroke-width="2.7" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
+            <path class="lg-line" d="M251 62 Q222.5 79.4 193 95" stroke="#2b9ffc" stroke-width="3.7" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
+            <path class="lg-line" d="M251 62 Q275.9 81.6 301 101" stroke="#16a5fc" stroke-width="3.2" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
+            <path class="lg-line" d="M273 204 Q306.2 169.5 346 143" stroke="#01bbfd" stroke-width="2.2" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
+            <path class="lg-line" d="M273 204 Q233.7 193.4 196 178" stroke="#2da5fc" stroke-width="3" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
+            <path class="lg-line" d="M339 576 Q278.7 574.6 224 549" stroke="#789afb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
+            <path class="lg-line" d="M339 576 Q401.3 576.1 461 558" stroke="#847ffb" stroke-width="2.4" stroke-linecap="round" pathLength="1" style="animation-delay:1.5s"/>
+            <path class="lg-line" d="M339 576 Q320 555.4 302 534" stroke="#4f9ffd" stroke-width="3" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
+            <path class="lg-line" d="M339 576 Q363.8 555.3 389 535" stroke="#bdc9fc" stroke-width="2.5" stroke-linecap="round" pathLength="1" style="animation-delay:1.4s"/>
+            <path class="lg-line" d="M304 454 Q269.3 418.7 241 378" stroke="#00b4fd" stroke-width="2.4" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
+            <path class="lg-line" d="M304 454 Q339.4 478.9 380 494" stroke="#479efc" stroke-width="3" stroke-linecap="round" pathLength="1" style="animation-delay:1.4s"/>
+            <path class="lg-line" d="M358 50 Q352.1 96.5 346 143" stroke="#00c1fd" stroke-width="3.9" stroke-linecap="round" pathLength="1" style="animation-delay:2.2s"/>
+            <path class="lg-line" d="M346 143 Q400.6 133.2 454 148" stroke="#5bd4fc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:2.1s"/>
+            <path class="lg-line" d="M346 143 Q302.6 138 260 128" stroke="#a0cafc" stroke-width="2.6" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
+            <path class="lg-line" d="M346 143 Q323.1 122.4 301 101" stroke="#07b4fd" stroke-width="3.7" stroke-linecap="round" pathLength="1" style="animation-delay:0.5s"/>
+            <path class="lg-line" d="M241 378 Q237.4 437 235 496" stroke="#11a0fd" stroke-width="3.2" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
+            <path class="lg-line" d="M517 464 Q476.7 485.9 432 496" stroke="#6f6cfb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.6s"/>
+            <path class="lg-line" d="M193 95 Q156.5 122.2 125 155" stroke="#398ffd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
+            <path class="lg-line" d="M193 95 Q195.3 136.5 196 178" stroke="#429dfb" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
+            <path class="lg-line" d="M125 155 Q98.9 190.9 82 232" stroke="#6b76f9" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
+            <path class="lg-line" d="M82 232 Q112.8 238.9 144 243" stroke="#6864f9" stroke-width="2.5" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
+            <path class="lg-line" d="M82 232 Q71.1 276.3 71 322" stroke="#8a87fa" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.9s"/>
+            <path class="lg-line" d="M144 243 Q107.5 282.5 71 322" stroke="#6564fa" stroke-width="3.6" stroke-linecap="round" pathLength="1" style="animation-delay:0.9s"/>
+            <path class="lg-line" d="M144 243 Q148.5 316.6 155 390" stroke="#6968f9" stroke-width="2.9" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
+            <path class="lg-line" d="M144 243 Q167 208.1 196 178" stroke="#5c7ffb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:0.8s"/>
+            <path class="lg-line" d="M71 322 Q112.1 357.1 155 390" stroke="#c2bcfd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
+            <path class="lg-line" d="M71 322 Q76.5 371.7 93 419" stroke="#8282fb" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
+            <path class="lg-line" d="M155 390 Q146.8 436.9 135 483" stroke="#557bfa" stroke-width="3.4" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
+            <path class="lg-line" d="M155 390 Q190.5 446.4 235 496" stroke="#47a0fd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
+            <path class="lg-line" d="M155 390 Q124.4 405.3 93 419" stroke="#5e64fa" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:1s"/>
+            <path class="lg-line" d="M135 483 Q173.5 524 224 549" stroke="#78bafe" stroke-width="3" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
+            <path class="lg-line" d="M135 483 Q109.3 454.1 93 419" stroke="#5377fd" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.1s"/>
+            <path class="lg-line" d="M235 496 Q229 522.4 224 549" stroke="#47b0fd" stroke-width="3" stroke-linecap="round" pathLength="1" style="animation-delay:1.2s"/>
+            <path class="lg-line" d="M235 496 Q269.3 513.6 302 534" stroke="#2696fc" stroke-width="3.5" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
+            <path class="lg-line" d="M196 178 Q228.3 153.4 260 128" stroke="#45a4fd" stroke-width="2.8" stroke-linecap="round" pathLength="1" style="animation-delay:0.7s"/>
+            <path class="lg-line" d="M432 496 Q405.9 497.4 380 494" stroke="#7775f7" stroke-width="4" stroke-linecap="round" pathLength="1" style="animation-delay:1.5s"/>
+            <path class="lg-line" d="M380 494 Q343.7 519.2 302 534" stroke="#97a1fc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.4s"/>
+            <path class="lg-line" d="M260 128 Q282.1 116.9 301 101" stroke="#c9dffd" stroke-width="2.3" stroke-linecap="round" pathLength="1" style="animation-delay:0.6s"/>
+            <path class="lg-line" d="M224 549 Q263 541.5 302 534" stroke="#c3c6fc" stroke-width="2" stroke-linecap="round" pathLength="1" style="animation-delay:1.3s"/>
             <circle class="lg-node" cx="234" cy="295" r="18" fill="#5181fd" style="animation-delay:0.5s,1.2s"/>
             <circle class="lg-node" cx="251" cy="62" r="17.799997329711914" fill="#3296fe" style="animation-delay:0.2s,0.9s"/>
             <circle class="lg-node" cx="273" cy="204" r="17.799997329711914" fill="#03bafe" style="animation-delay:0.3s,1s"/>
@@ -885,6 +887,7 @@
             <circle class="lg-node" cx="235" cy="496" r="15" fill="#2f93fe" style="animation-delay:0.8s,1.5s"/>
             <circle class="lg-node" cx="196" cy="178" r="14.999998092651367" fill="#488afd" style="animation-delay:0.3s,1s"/>
             <circle class="lg-node" cx="224" cy="549" r="14.999998092651367" fill="#2c8bfd" style="animation-delay:0.9s,1.6s"/>
+            <circle class="lg-node" cx="461" cy="558" r="14.999998092651367" fill="#615efd" style="animation-delay:1.1s,1.8s"/>
             <circle class="lg-node" cx="93" cy="419" r="14.599998474121094" fill="#6a69fd" style="animation-delay:0.7s,1.4s"/>
             <circle class="lg-node" cx="432" cy="496" r="13.999998092651367" fill="#6260fd" style="animation-delay:1.1s,1.8s"/>
             <circle class="lg-node" cx="380" cy="494" r="12.79999828338623" fill="#5a5dfd" style="animation-delay:1.1s,1.8s"/>
@@ -892,17 +895,8 @@
             <circle class="lg-node" cx="260" cy="128" r="7" fill="#49a1fd" style="animation-delay:0.2s,0.9s"/>
             <circle class="lg-node" cx="301" cy="101" r="5.599999904632568" fill="#59affd" style="animation-delay:0.2s,0.9s"/>
             <circle class="lg-node" cx="389" cy="535" r="3.4000000953674316" fill="#a4befd" style="animation-delay:1.1s,1.8s"/>
-            <circle class="lg-node" cx="371" cy="140" r="3" fill="#27c7fb" style="animation-delay:1.9s,2.6s"/>
-            <circle class="lg-node" cx="237" cy="442" r="3" fill="#46a9fd" style="animation-delay:0.8s,1.5s"/>
-            <circle class="lg-node" cx="353" cy="84" r="2.799999952316284" fill="#2fcafd" style="animation-delay:1.9s,2.6s"/>
-            <circle class="lg-node" cx="350" cy="107" r="2.799999952316284" fill="#2bc1fd" style="animation-delay:1.9s,2.6s"/>
-            <circle class="lg-node" cx="348" cy="123" r="2.799999952316284" fill="#2ac7fe" style="animation-delay:1.9s,2.6s"/>
-            <circle class="lg-node" cx="150" cy="336" r="2.799999952316284" fill="#7573fa" style="animation-delay:0.6s,1.3s"/>
-            <circle class="lg-node" cx="238" cy="417" r="2.799999952316284" fill="#3ba4fe" style="animation-delay:0.8s,1.5s"/>
-            <circle class="lg-node" cx="300" cy="572" r="2.799999952316284" fill="#6d82fc" style="animation-delay:0.9s,1.6s"/>
             <g class="lg-drift" style="animation-duration:8.7s;animation-delay:-2.4s"><circle class="lg-node" cx="584" cy="417" r="17.799997329711914" fill="#5c62fe" style="animation-delay:1.3s,2s"/></g>
             <g class="lg-drift" style="animation-duration:6s;animation-delay:-4.8s"><circle class="lg-node" cx="603" cy="334" r="14.999998092651367" fill="#586bfe" style="animation-delay:1.4s,2.1s"/></g>
-            <g class="lg-drift" style="animation-duration:7.8s;animation-delay:-0.8s"><circle class="lg-node" cx="461" cy="558" r="14.999998092651367" fill="#615efd" style="animation-delay:1.1s,1.8s"/></g>
             <g class="lg-drift" style="animation-duration:6s;animation-delay:-3.2s"><circle class="lg-node" cx="440" cy="80" r="13.599998474121094" fill="#53a3fd" style="animation-delay:1.8s,2.5s"/></g>
             <g class="lg-drift" style="animation-duration:7.8s;animation-delay:-4.8s"><circle class="lg-node" cx="528" cy="514" r="12.599998474121094" fill="#5297fd" style="animation-delay:1.2s,1.9s"/></g>
             <g class="lg-drift" style="animation-duration:8.7s;animation-delay:0s"><circle class="lg-node" cx="497" cy="115" r="11" fill="#56a6fd" style="animation-delay:1.7s,2.4s"/></g>
