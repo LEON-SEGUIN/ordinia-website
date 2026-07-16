@@ -724,8 +724,9 @@
       /* Softer tap feedback on touch */
       a, button { -webkit-tap-highlight-color: transparent; }
 
-      /* ── HERO — fills the first screen: only the headline + the two
-             CTAs are visible on load; the counter appears on scroll ─── */
+      /* ── HERO — one calm, centered block: headline, pitch, two CTAs.
+             The label and trust line are desktop-only; on a phone they
+             read as clutter, so the first screen keeps a single message ── */
       #hero-section {
         min-height: 100vh !important;   /* fallback */
         min-height: 100svh !important;  /* exclude mobile browser chrome */
@@ -739,30 +740,26 @@
         justify-content: center !important;
         min-height: 100%;
       }
-      /* Generous gap before the CTAs so the block spreads down the screen */
-      #hero-content .hero-ctas { margin-top: 70px !important; }
+      #hero-label, #hero-trust { display: none !important; }
       .rings-float {
         width: min(74vw, 280px) !important; height: min(74vw, 280px) !important;
-        top: 24vh !important; right: -8% !important; opacity: 0.42 !important;
-      }
-      #hero-label {
-        font-size: 10px !important; letter-spacing: 0.16em !important;
-        margin-bottom: 42px !important;
+        top: 20vh !important; right: -8% !important; opacity: 0.42 !important;
       }
       #hero-h1 {
-        font-size: clamp(1.6rem, 7.6vw, 2.1rem) !important;
-        line-height: 1.14 !important; letter-spacing: -0.02em !important;
-        max-width: 100% !important; margin-bottom: 54px !important;
+        font-size: clamp(1.75rem, 7.9vw, 2.2rem) !important;
+        line-height: 1.12 !important; letter-spacing: -0.025em !important;
+        max-width: 100% !important; margin-bottom: 22px !important;
       }
       #hero-h1 .overflow-clip,
       #hero-h1 .reveal-line { white-space: normal !important; }
       #hero-sub {
-        font-size: 0.97rem !important; line-height: 1.62 !important;
+        font-size: 1rem !important; line-height: 1.65 !important;
         max-width: 100% !important; margin-bottom: 0 !important;
       }
       .hero-ctas {
         flex-direction: column !important; align-items: stretch !important;
         gap: 11px !important; width: 100% !important;
+        margin-top: 40px !important;
       }
       .hero-ctas a {
         justify-content: center !important; width: 100% !important;
@@ -894,7 +891,7 @@
 
     /* ── Very small phones (≤ 360px) — nudge the display type down ─── */
     @media (max-width: 360px) {
-      #hero-h1      { font-size: 1.5rem !important; }
+      #hero-h1      { font-size: 1.75rem !important; }
       .h-section    { font-size: 1.42rem !important; }
       #cta-block h2 { font-size: 1.6rem !important; }
     }
