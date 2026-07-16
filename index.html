@@ -642,6 +642,70 @@
     @media (max-width: 768px) {
       .nav-links  { display: none !important; }
       #nav-burger { display: flex !important; }
+
+      /* ── Mobile menu — full-screen aurora panel, staggered entrance ── */
+      #mobile-menu {
+        display: none;
+        position: fixed; inset: 0; z-index: 49;
+        flex-direction: column; justify-content: space-between;
+        padding: 108px 26px calc(30px + env(safe-area-inset-bottom));
+        background:
+          radial-gradient(120% 55% at 88% 0%,  rgba(0,178,255,0.11), transparent 62%),
+          radial-gradient(130% 70% at 8% 100%, rgba(106,92,255,0.13), transparent 62%),
+          rgba(255,255,255,0.96);
+        backdrop-filter: blur(22px) saturate(1.25);
+        -webkit-backdrop-filter: blur(22px) saturate(1.25);
+      }
+      #mobile-menu.open { display: flex !important; }
+
+      .mm-links { display: flex; flex-direction: column; margin: auto 0; }
+      .mm-link {
+        display: flex; align-items: baseline; gap: 18px;
+        padding: 21px 2px;
+        text-decoration: none; color: var(--text);
+        font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+        font-size: 1.6rem; letter-spacing: -0.025em; line-height: 1.1;
+        border-bottom: 1px solid var(--hairline);
+        opacity: 0; transform: translateY(20px);
+        -webkit-tap-highlight-color: transparent;
+      }
+      .mm-link:first-child { border-top: 1px solid var(--hairline); }
+      .mm-link:active { color: var(--accent); }
+      .mm-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+      .mm-num {
+        font-family: 'JetBrains Mono', monospace; font-weight: 500;
+        font-size: 11px; letter-spacing: 0.2em;
+        background: var(--grad);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+        flex-shrink: 0; min-width: 24px;
+      }
+      @keyframes mmIn { to { opacity: 1; transform: translateY(0); } }
+      #mobile-menu.open .mm-link { animation: mmIn 0.55s cubic-bezier(0.16,1,0.3,1) forwards; }
+      #mobile-menu.open .mm-link:nth-child(1) { animation-delay: 0.05s; }
+      #mobile-menu.open .mm-link:nth-child(2) { animation-delay: 0.11s; }
+      #mobile-menu.open .mm-link:nth-child(3) { animation-delay: 0.17s; }
+      #mobile-menu.open .mm-link:nth-child(4) { animation-delay: 0.23s; }
+
+      .mm-foot {
+        display: flex; flex-direction: column; gap: 20px;
+        opacity: 0; transform: translateY(20px);
+      }
+      #mobile-menu.open .mm-foot { animation: mmIn 0.55s cubic-bezier(0.16,1,0.3,1) 0.32s forwards; }
+      .mm-cta { justify-content: center; width: 100%; box-sizing: border-box; padding: 16px 26px; }
+      .mm-mail {
+        text-align: center; text-decoration: none;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11.5px; letter-spacing: 0.06em; color: var(--muted);
+      }
+      .mm-mail:active { color: var(--accent); }
+      .mm-mail:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        #mobile-menu.open .mm-link, #mobile-menu.open .mm-foot {
+          animation: none; opacity: 1; transform: none;
+        }
+      }
     }
 
     @media (max-width: 767px) {
@@ -654,8 +718,11 @@
       #navbar         { padding: 9px 20px !important; }
       #navbar > a img { height: 42px !important; transform: none !important; transform-origin: left center !important; }
 
-      #mobile-menu      { display: none; }
-      #mobile-menu.open { display: flex !important; }
+      /* Anchor links land below the fixed navbar instead of under it */
+      #services, #process, #pourquoi, #contact { scroll-margin-top: 62px; }
+
+      /* Softer tap feedback on touch */
+      a, button { -webkit-tap-highlight-color: transparent; }
 
       /* ── HERO — fills the first screen: only the headline + the two
              CTAs are visible on load; the counter appears on scroll ─── */
@@ -716,7 +783,7 @@
         height: 1px; pointer-events: none;
         background: linear-gradient(to right, transparent, var(--stat-border) 15%, var(--stat-border) 85%, transparent);
       }
-      .stat-num         { font-size: clamp(2rem, 9.5vw, 2.5rem) !important; }
+      .stat-num         { font-size: clamp(2rem, 9.5vw, 2.5rem) !important; opacity: 0.72 !important; }
       .stat-item .label { margin-top: 8px !important; font-size: 10px !important; letter-spacing: 0.14em !important; }
 
       /* ── Shared section shell + section headings ────────────────── */
@@ -725,9 +792,15 @@
       #pourquoi > div > div:first-child { margin-bottom: 34px !important; max-width: 100% !important; }
       .h-section { font-size: clamp(1.5rem, 6.4vw, 1.95rem) !important; line-height: 1.14 !important; }
 
-      /* ── SERVICES cards ─────────────────────────────────────────── */
-      #svc-grid           { grid-template-columns: 1fr !important; }
-      .svc-card           { padding: 30px 24px !important; }
+      /* ── SERVICES cards — detached, rounded, tinted shadow ──────── */
+      #svc-grid           { grid-template-columns: 1fr !important; gap: 14px !important;
+                            background: transparent !important; border: none !important; }
+      .svc-card           { padding: 30px 24px !important; border-radius: 14px !important;
+                            border: 1px solid var(--border) !important;
+                            background: rgba(255,255,255,0.82) !important;
+                            box-shadow: 0 14px 34px -22px rgba(106,92,255,0.28),
+                                        0 3px 10px rgba(13,13,18,0.03) !important; }
+      .svc-card:active    { transform: scale(0.985) !important; }
       .svc-card .card-ic  { margin-bottom: 12px !important; }
       .svc-card .card-num { margin-bottom: 14px !important; }
       .svc-card h3        { font-size: 1.2rem !important; margin-bottom: 12px !important; }
@@ -740,14 +813,21 @@
       #proc-h2              { margin-bottom: 0 !important; max-width: 100% !important; }
       .proc-col-grid        { gap: 30px !important; }
       .proc-card-wrap       { gap: 14px !important; }
-      .proc-card            { padding: 28px 24px !important; }
+      .proc-card            { padding: 28px 24px !important; border-radius: 14px !important; }
+      .proc-card:active     { transform: scale(0.985) !important; }
       .proc-card .grad-text { font-size: 40px !important; margin-bottom: 16px !important; }
       .proc-card h3         { font-size: 1.15rem !important; }
       .proc-card p          { font-size: 15px !important; line-height: 1.7 !important; }
 
       /* ── WHY D&S — compact 2×2 benefit tiles (denser than desktop) ─ */
-      #why-grid           { grid-template-columns: 1fr 1fr !important; }
-      .why-card           { padding: 22px 16px !important; }
+      #why-grid           { grid-template-columns: 1fr 1fr !important; gap: 10px !important;
+                            background: transparent !important; border: none !important; }
+      .why-card           { padding: 22px 16px !important; border-radius: 14px !important;
+                            border: 1px solid var(--border) !important;
+                            background: rgba(255,255,255,0.82) !important;
+                            box-shadow: 0 14px 34px -22px rgba(106,92,255,0.28),
+                                        0 3px 10px rgba(13,13,18,0.03) !important; }
+      .why-card:active    { transform: scale(0.97) !important; }
       .why-card .card-ic  { margin-bottom: 12px !important; }
       .why-card .card-ic svg { width: 26px !important; height: 26px !important; }
       .why-card .card-num { margin-bottom: 9px !important; }
@@ -759,7 +839,12 @@
                     font-size: 10px !important; letter-spacing: 0.12em !important; }
       .trust-line svg { width: 13px !important; height: 13px !important; }
       .sec-band { grid-template-columns: 1fr !important; gap: 22px !important;
-                  padding: 26px 20px !important; }
+                  padding: 26px 20px !important;
+                  margin-top: 14px !important;
+                  border-top: 1px solid var(--border) !important;
+                  border-radius: 14px !important;
+                  box-shadow: 0 14px 34px -22px rgba(106,92,255,0.28),
+                              0 3px 10px rgba(13,13,18,0.03) !important; }
       .sec-band-head { gap: 14px !important; }
       .sec-band-head svg { width: 24px !important; height: 24px !important; }
       .sec-band-head .label { margin-bottom: 9px !important;
@@ -787,8 +872,18 @@
         padding: 16px 26px !important;
       }
 
-      /* ── FOOTER ─────────────────────────────────────────────────── */
-      footer { padding: 36px 22px !important; }
+      /* ── Contact form card — rounded like the rest of the mobile UI ─ */
+      .form-card { border-radius: 14px !important;
+                   background: rgba(255,255,255,0.86) !important;
+                   box-shadow: 0 14px 34px -22px rgba(106,92,255,0.28),
+                               0 3px 10px rgba(13,13,18,0.03) !important; }
+
+      /* Snappier press feedback for the detached cards */
+      .svc-card, .why-card { transition-duration: 0.2s !important; }
+
+      /* ── FOOTER — extra bottom room so the chat FAB never covers the
+             copyright line ──────────────────────────────────────────── */
+      footer { padding: 36px 22px calc(92px + env(safe-area-inset-bottom)) !important; }
       footer > div {
         flex-direction: column !important; align-items: center !important;
         text-align: center !important; gap: 18px !important;
@@ -873,15 +968,22 @@
   </nav>
 
   <!-- Mobile menu overlay -->
-  <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation mobile"
-       style="display:none;position:fixed;inset:0;z-index:49;
-              background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-              flex-direction:column;align-items:center;justify-content:center;gap:36px;
-              padding:80px 24px 48px">
-    <a href="#services"  class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Services</a>
-    <a href="#process"   class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Comment ça marche</a>
-    <a href="#pourquoi"  class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Pourquoi D&S</a>
-    <a href="pricing.html" class="nav-link" onclick="closeMobileMenu()" style="font-size:1.4rem;letter-spacing:0.01em">Tarifs</a>
+  <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation mobile" style="display:none">
+    <nav class="mm-links" aria-label="Navigation principale mobile">
+      <a href="#services"    class="mm-link" onclick="closeMobileMenu()"><span class="mm-num">01</span>Services</a>
+      <a href="#process"     class="mm-link" onclick="closeMobileMenu()"><span class="mm-num">02</span>Comment ça marche</a>
+      <a href="#pourquoi"    class="mm-link" onclick="closeMobileMenu()"><span class="mm-num">03</span>Pourquoi D&S</a>
+      <a href="pricing.html" class="mm-link" onclick="closeMobileMenu()"><span class="mm-num">04</span>Tarifs</a>
+    </nav>
+    <div class="mm-foot">
+      <a href="#contact" class="btn-primary mm-cta" onclick="closeMobileMenu()">
+        Auditer mon entreprise
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+          <path d="M2.5 7.5h10M7.5 2.5l5 5-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="mailto:contact@ds-intelligence.fr" class="mm-mail">contact@ds-intelligence.fr</a>
+    </div>
   </div>
 
   <!-- ══════════════════════════ HERO ══════════════════════════ -->

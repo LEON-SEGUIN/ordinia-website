@@ -148,9 +148,10 @@ window.DS_CONFIG = {
 
     /* Mobile */
     '@media (max-width: 767px){',
-    '  #ds-assistant{bottom:18px;right:16px}',
+    '  #ds-assistant{bottom:calc(16px + env(safe-area-inset-bottom));right:16px}',
     '  #ds-fab{width:54px;height:54px}',
-    '  #ds-panel{right:12px;bottom:86px;width:calc(100vw - 24px);height:min(560px,calc(100dvh - 104px))}',
+    '  #ds-nudge{font-size:10px;letter-spacing:0.05em;padding:9px 14px;bottom:64px}',
+    '  #ds-panel{right:12px;bottom:calc(84px + env(safe-area-inset-bottom));width:calc(100vw - 24px);height:min(560px,calc(100dvh - 118px))}',
     '  .ds-inputrow input{font-size:16px}',   /* évite le zoom iOS */
     '}',
 
