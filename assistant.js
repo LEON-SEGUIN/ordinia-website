@@ -15,7 +15,7 @@
 window.DS_CONFIG = {
   chatWebhook: '',
   leadWebhook: '',
-  contactEmail: 'contact@ds-intelligence.fr',
+  contactEmail: 'contact@ds-intelligence.tech',
 }
 
 ;(function () {
@@ -443,10 +443,10 @@ window.DS_CONFIG = {
     var subject = type === 'rdv'
       ? 'Demande de rendez-vous — ' + (d.name || '')
       : 'Demande de contact — ' + (d.name || '')
-    var lines = Object.keys(d).map(function (k) {
-      var labels = { name: 'Nom', email: 'Email', company: 'Entreprise', need: 'Besoin', availability: 'Disponibilités', message: 'Message' }
-      return (labels[k] || k) + ' : ' + d[k]
-    })
+    var labels = { name: 'Nom', email: 'Email', phone: 'Téléphone', company: 'Entreprise', need: 'Besoin', availability: 'Disponibilités', message: 'Message' }
+    var lines = Object.keys(d)
+      .filter(function (k) { return d[k] !== '' && d[k] != null })
+      .map(function (k) { return (labels[k] || k) + ' : ' + d[k] })
     return 'mailto:' + CFG.contactEmail + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'))
   }
   function openMailto() {
@@ -620,6 +620,7 @@ window.DS_CONFIG = {
       var data = {
         name: name.value.trim(),
         email: email.value.trim(),
+        phone: (form.querySelector('[name="phone"]') || {}).value ? form.querySelector('[name="phone"]').value.trim() : '',
         company: form.querySelector('[name="company"]').value.trim(),
         need: form.querySelector('[name="need"]').value,
         message: message.value.trim(),
