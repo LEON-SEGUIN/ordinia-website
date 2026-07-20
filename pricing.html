@@ -1286,7 +1286,6 @@
         <a href="index.html#services" class="nav-link" style="font-size:13px">Services</a>
         <a href="pricing.html"        class="nav-link" style="font-size:13px">Tarifs</a>
         <a href="index.html#contact" class="nav-link" style="font-size:13px">Contact</a>
-        <a href="#"                   class="nav-link" style="font-size:13px">Mentions légales</a>
       </nav>
 
       <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
@@ -1431,6 +1430,20 @@
         menu.classList.contains('open') ? closeMenu() : openMenu()
       })
       menu.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu() })
+    })()
+
+    /* ─── CTA des offres → section contact (audit / devis / déploiement) ─────
+       Tous les boutons d'action des cartes tarifaires (.price-cta, .btn-light)
+       amènent l'utilisateur au bloc de contact en bas de page. */
+    ;(function() {
+      var target = document.getElementById('contact')
+      if (!target) return
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      document.querySelectorAll('.price-cta, .btn-light').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+        })
+      })
     })()
 
     /* ─── Custom cursor — spring-follow orb (vanilla, no Motion dependency) ─── */
