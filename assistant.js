@@ -290,7 +290,7 @@ window.DS_CONFIG = {
     if (greeted) return
     greeted = true
     botSay(
-      'Bonjour ! Je suis l’assistant <strong>D&amp;S Intelligence</strong>.<br>Posez-moi votre question — je vous réponds tout de suite.',
+      'Bonjour ! Je suis l’assistant <strong>D&amp;S Intelligence</strong>.<br>Posez-moi votre question, je vous réponds tout de suite.',
       null, 600
     )
   }
