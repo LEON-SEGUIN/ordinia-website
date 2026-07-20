@@ -13,7 +13,7 @@
                    → 200 = succès (formulaire de contact + prise de RDV)
    ═══════════════════════════════════════════════════════════════════ */
 window.DS_CONFIG = {
-  chatWebhook: '',
+  chatWebhook: 'https://ordinia.app.n8n.cloud/webhook/chat-ds-intelligence',
   leadWebhook: '',
   contactEmail: 'contact@ds-intelligence.tech',
 }
