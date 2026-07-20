@@ -23,8 +23,6 @@ window.DS_CONFIG = {
 
   var CFG = window.DS_CONFIG
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  var onPricing = /pricing\.html/.test(location.pathname)
-  var HOME = onPricing ? 'index.html' : ''
 
   /* ── Session id (réutilisé plus tard par l'agent n8n pour la mémoire) ── */
   var sessionId = sessionStorage.getItem('ds-session')
@@ -225,64 +223,11 @@ window.DS_CONFIG = {
     })
   }
 
-  /* ═══════════════════ CONTENU DU BOT ═══════════════════ */
-  var MAIN_CHIPS = ['Nos services', 'Comment ça marche', 'Tarifs', 'Sécurité des données', 'Prendre un rendez-vous', 'Être recontacté']
-
-  var FAQ = {
-    services: {
-      reply: 'Nous concevons des <strong>systèmes agentiques sur mesure</strong> — des agents IA et des automatisations qui font le travail répétitif à votre place.<br><br>Trois volets : <strong>Diagnostic</strong> (on identifie où l’IA aura le plus gros impact financier chez vous), <strong>Création</strong> (des automatisations qui s’intègrent à vos outils existants) et <strong>Suivi</strong> (maintenance et évolution continue).',
-      chips: ['Voir les services', 'Prendre un rendez-vous', 'Retour au menu'],
-    },
-    process: {
-      reply: 'Tout commence par un <strong>appel stratégique gratuit d’une heure</strong> : on analyse vos processus et on identifie votre première piste d’automatisation rentable.<br><br>Ensuite : conception, déploiement, puis on reste à vos côtés pour faire évoluer le système au rythme de vos besoins.',
-      chips: ['Prendre un rendez-vous', 'Tarifs', 'Retour au menu'],
-    },
-    tarifs: {
-      reply: 'Chaque projet est dimensionné sur mesure après le diagnostic — nos formules d’accompagnement et leurs fourchettes sont détaillées sur la page Tarifs.',
-      chips: ['Voir les tarifs', 'Prendre un rendez-vous', 'Retour au menu'],
-    },
-    securite: {
-      reply: 'Vos automatisations tournent sur un <strong>cloud sécurisé</strong>, pas sur un poste de bureau : connexions chiffrées, accès cloisonnés, identifiants stockés dans un coffre chiffré.<br><br>Vos données restent les vôtres — elles ne servent jamais à entraîner des modèles tiers.',
-      chips: ['Prendre un rendez-vous', 'Retour au menu'],
-    },
-  }
-
-  /* Flow séquentiel de capture (RDV / recontact) */
-  var FLOWS = {
-    rdv: {
-      intro: 'Avec plaisir. Je prends quelques informations et l’équipe revient vers vous très vite pour confirmer un créneau.',
-      steps: [
-        { key: 'name', q: 'Votre nom ?' },
-        { key: 'email', q: 'Votre email professionnel ?', validate: 'email' },
-        { key: 'company', q: 'Le nom de votre entreprise ? <em style="color:#6b7280">(optionnel)</em>', optional: true },
-        { key: 'need', q: 'En une phrase, quel processus aimeriez-vous automatiser ?' },
-        { key: 'availability', q: 'Quelles disponibilités vous arrangent ? <em style="color:#6b7280">(ex. mardi matin, jeudi après 14h)</em>' },
-      ],
-      done: function (d) {
-        return 'C’est noté, <strong>' + esc(d.name) + '</strong> ! L’équipe vous enverra une invitation à <strong>' + esc(d.email) + '</strong> pour un appel stratégique d’une heure, sur l’un de vos créneaux.'
-      },
-    },
-    recontact: {
-      intro: 'Très bien — dites-m’en un peu plus et l’équipe vous recontacte sous 24h ouvrées.',
-      steps: [
-        { key: 'name', q: 'Votre nom ?' },
-        { key: 'email', q: 'Votre email ?', validate: 'email' },
-        { key: 'message', q: 'Quel est votre besoin ou votre question ?' },
-      ],
-      done: function (d) {
-        return 'Merci <strong>' + esc(d.name) + '</strong>, c’est transmis. Vous recevrez une réponse à <strong>' + esc(d.email) + '</strong> sous 24h ouvrées.'
-      },
-    },
-  }
-
   /* ═══════════════════ HELPERS ═══════════════════ */
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
     })
-  }
-  function norm(s) {
-    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   }
   function scrollBottom() {
     msgs.scrollTop = msgs.scrollHeight
@@ -339,106 +284,23 @@ window.DS_CONFIG = {
   }
 
   /* ═══════════════════ ÉTAT & LOGIQUE ═══════════════════ */
-  var flow = null          /* {name, stepIdx, data} pendant une capture */
   var greeted = false
 
   function greet() {
     if (greeted) return
     greeted = true
     botSay(
-      'Bonjour ! Je suis l’assistant <strong>D&amp;S Intelligence</strong>.<br>Je peux répondre à vos questions ou organiser un rendez-vous avec l’équipe — que souhaitez-vous savoir ?',
-      MAIN_CHIPS, 600
+      'Bonjour ! Je suis l’assistant <strong>D&amp;S Intelligence</strong>.<br>Posez-moi votre question — je vous réponds tout de suite.',
+      null, 600
     )
   }
 
-  function goto(anchor) {
-    /* ancre locale sur index, sinon retour vers index.html#… */
-    if (!onPricing || anchor === 'pricing.html') {
-      if (anchor === 'pricing.html') { location.href = anchor; return }
-      closePanel()
-      var el = document.querySelector(anchor)
-      if (el) el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' })
-    } else {
-      location.href = anchor === 'pricing.html' ? anchor : HOME + anchor
-    }
-  }
-
+  /* Une puce renvoyée par n8n = un message envoyé tel quel à l'agent */
   function handleChip(label) {
     clearChips()
-    addMsg('user', label)
-    var n = norm(label)
-    if (n.indexOf('services') > -1 && n.indexOf('voir') > -1) return void setTimeout(function () { goto('#services') }, 350)
-    if (n.indexOf('tarifs') > -1 && n.indexOf('voir') > -1) return void setTimeout(function () { location.href = 'pricing.html' }, 350)
-    if (n.indexOf('formulaire') > -1) return void setTimeout(function () { goto('#contact') }, 350)
-    if (n.indexOf('email') > -1 && flow === null && pendingMailto) return void openMailto()
-    if (n.indexOf('passer') > -1 && flow) return void flowAnswer('')
-    if (n.indexOf('retour') > -1) return void botSay('Que souhaitez-vous savoir d’autre ?', MAIN_CHIPS, 350)
-    if (n.indexOf('rendez-vous') > -1 || n.indexOf('rdv') > -1) return void startFlow('rdv')
-    if (n.indexOf('recontact') > -1) return void startFlow('recontact')
-    if (n.indexOf('services') > -1) return void answerFaq('services')
-    if (n.indexOf('marche') > -1) return void answerFaq('process')
-    if (n.indexOf('tarifs') > -1) return void answerFaq('tarifs')
-    if (n.indexOf('securite') > -1) return void answerFaq('securite')
-    botSay('Que souhaitez-vous savoir ?', MAIN_CHIPS, 350)
+    handleFree(label)
   }
 
-  function answerFaq(key) {
-    var f = FAQ[key]
-    botSay(f.reply, f.chips)
-  }
-
-  /* ── Capture séquentielle ── */
-  function startFlow(name) {
-    flow = { name: name, stepIdx: -1, data: {} }
-    var f = FLOWS[name]
-    botSay(f.intro, null, 450)
-    setTimeout(nextStep, reduced ? 120 : 1100)
-  }
-  function nextStep() {
-    var f = FLOWS[flow.name]
-    flow.stepIdx++
-    if (flow.stepIdx >= f.steps.length) return void finishFlow()
-    var step = f.steps[flow.stepIdx]
-    botSay(step.q, step.optional ? ['Passer'] : null, 420)
-    setTimeout(function () { input.focus() }, reduced ? 150 : 900)
-  }
-  function flowAnswer(text) {
-    var f = FLOWS[flow.name]
-    var step = f.steps[flow.stepIdx]
-    if (text) addMsg('user', text)
-    else if (step.optional) addMsg('user', 'Passer')
-    if (step.validate === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(text.trim())) {
-      botSay('Hmm, cet email ne semble pas valide — pouvez-vous vérifier ?', null, 350)
-      return
-    }
-    if (!text && !step.optional) {
-      botSay(step.q, null, 300)
-      return
-    }
-    flow.data[step.key] = text.trim()
-    clearChips()
-    nextStep()
-  }
-
-  var pendingMailto = null
-  function finishFlow() {
-    var f = FLOWS[flow.name]
-    var data = flow.data
-    var type = flow.name
-    flow = null
-    submitLead(type, data).then(function (ok) {
-      if (ok) {
-        botSay(f.done(data) + '<br><br>Autre chose ?', ['Retour au menu'])
-      } else {
-        /* Pas de webhook configuré (ou erreur réseau) : on bascule sur l'email */
-        pendingMailto = buildMailto(type, data)
-        botSay(
-          f.done(data) + '<br><br>Pour finaliser l’envoi, cliquez ci-dessous — votre client email s’ouvrira avec le récapitulatif prêt à partir.',
-          ['Envoyer par email', 'Retour au menu']
-        )
-      }
-    })
-  }
   function buildMailto(type, d) {
     var subject = type === 'rdv'
       ? 'Demande de rendez-vous — ' + (d.name || '')
@@ -449,13 +311,6 @@ window.DS_CONFIG = {
       .map(function (k) { return (labels[k] || k) + ' : ' + d[k] })
     return 'mailto:' + CFG.contactEmail + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'))
   }
-  function openMailto() {
-    if (!pendingMailto) return
-    location.href = pendingMailto
-    pendingMailto = null
-    botSay('Votre client email vient de s’ouvrir. Si rien ne s’est passé, écrivez-nous directement à <a href="mailto:' + CFG.contactEmail + '">' + CFG.contactEmail + '</a>.', ['Retour au menu'])
-  }
-
   /* ── Envoi lead → n8n ── */
   function submitLead(type, data) {
     if (!CFG.leadWebhook) return Promise.resolve(false)
@@ -467,61 +322,38 @@ window.DS_CONFIG = {
     }).then(function (r) { return r.ok }).catch(function () { return false })
   }
 
-  /* ── Texte libre ── */
+  /* ── Texte libre → agent n8n (seule source de réponses) ── */
   function handleFree(text) {
     addMsg('user', text)
-    if (flow) { /* géré dans flowAnswer — ne devrait pas arriver ici */ }
-    if (CFG.chatWebhook) {
-      showTyping()
-      fetch(CFG.chatWebhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: sessionId, message: text, page: location.pathname }),
-      })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json() })
-        .then(function (j) {
-          hideTyping()
-          addMsg('bot', esc(j.reply || '').replace(/\n/g, '<br>'))
-          addChips(j.chips || null)
-        })
-        .catch(function () { hideTyping(); localAnswer(text) })
+    if (!CFG.chatWebhook) {
+      botSay('L’assistant est momentanément indisponible. Écrivez-nous à <a href="mailto:' + CFG.contactEmail + '">' + CFG.contactEmail + '</a>.', null)
       return
     }
-    localAnswer(text)
-  }
-  function localAnswer(text) {
-    var n = norm(text)
-    var has = function (words) {
-      return words.some(function (w) { return n.indexOf(w) > -1 })
-    }
-    if (has(['rdv', 'rendez', 'appel', 'reserver', 'creneau', 'dispo'])) {
-      botSay('Bien sûr — je peux organiser ça tout de suite.', ['Prendre un rendez-vous'])
-    } else if (has(['prix', 'tarif', 'cout', 'combien', 'budget', 'formule'])) {
-      answerFaq('tarifs')
-    } else if (has(['securit', 'donnee', 'rgpd', 'confident', 'chiffr'])) {
-      answerFaq('securite')
-    } else if (has(['marche', 'process', 'deroul', 'etape', 'commence', 'fonctionn'])) {
-      answerFaq('process')
-    } else if (has(['service', 'agent', 'automat', 'offre', 'faites', 'proposez'])) {
-      answerFaq('services')
-    } else if (has(['contact', 'joindre', 'recontact', 'ecrire'])) {
-      botSay('Deux options : je prends vos coordonnées ici, ou vous passez par le formulaire de contact.', ['Être recontacté', 'Aller au formulaire'])
-    } else if (has(['bonjour', 'salut', 'hello', 'bonsoir'])) {
-      botSay('Bonjour ! Que puis-je faire pour vous ?', MAIN_CHIPS)
-    } else if (has(['merci'])) {
-      botSay('Avec plaisir ! Autre chose ?', ['Retour au menu'])
-    } else {
-      botSay(
-        'Bonne question — je n’ai pas encore la réponse sous la main, mais l’équipe l’aura. Le plus simple : un échange rapide.',
-        ['Prendre un rendez-vous', 'Être recontacté', 'Retour au menu']
-      )
-    }
+    showTyping()
+    fetch(CFG.chatWebhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId, message: text, page: location.pathname }),
+    })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json() })
+      .then(function (j) {
+        hideTyping()
+        addMsg('bot', esc(j.reply || '').replace(/\n/g, '<br>'))
+        addChips(j.chips || null)
+      })
+      .catch(function () {
+        hideTyping()
+        addMsg('bot', 'Désolé, je n’arrive pas à joindre le service pour le moment. Réessayez dans un instant, ou écrivez-nous à <a href="mailto:' + CFG.contactEmail + '">' + CFG.contactEmail + '</a>.')
+      })
   }
 
   /* ═══════════════════ OUVERTURE / FERMETURE ═══════════════════ */
   var isOpen = false
-  function openPanel(startFlowName) {
-    if (isOpen) { if (startFlowName) startFlow(startFlowName); return }
+  /* prefill : message envoyé automatiquement à l'agent n8n à l'ouverture
+     (ex. un CTA « Planifier un appel » qui lance la prise de RDV côté n8n) */
+  function openPanel(prefill) {
+    var msg = typeof prefill === 'string' ? prefill : null
+    if (isOpen) { if (msg) handleFree(msg); return }
     isOpen = true
     root.classList.add('is-open')
     panel.classList.add('is-open')
@@ -530,9 +362,9 @@ window.DS_CONFIG = {
     hideNudge(true)
     var firstGreet = !greeted
     greet()
-    if (startFlowName) {
-      /* laisse le message d'accueil s'afficher avant de lancer le flow */
-      setTimeout(function () { startFlow(startFlowName) }, firstGreet ? (reduced ? 200 : 1500) : 0)
+    if (msg) {
+      /* laisse le message d'accueil s'afficher avant d'envoyer à n8n */
+      setTimeout(function () { handleFree(msg) }, firstGreet ? (reduced ? 200 : 1500) : 0)
     }
     setTimeout(function () { input.focus({ preventScroll: true }) }, 350)
   }
@@ -557,8 +389,7 @@ window.DS_CONFIG = {
     var text = input.value.trim()
     if (!text) return
     input.value = ''
-    if (flow) flowAnswer(text)
-    else handleFree(text)
+    handleFree(text)
   })
 
   /* Invite après 3s (une seule fois par session) */
@@ -574,12 +405,13 @@ window.DS_CONFIG = {
   }
   nudge.addEventListener('click', function () { openPanel() })
 
-  /* API publique : les CTA du site peuvent ouvrir l'assistant (ex. flow RDV) */
+  /* API publique : les CTA du site peuvent ouvrir l'assistant.
+     open() ouvre simplement ; open("texte") envoie aussi ce message à l'agent n8n. */
   window.DSAssistant = { open: openPanel, close: closePanel }
 
   /* Deep-link : #assistant ou #assistant-rdv dans l'URL ouvre le panneau */
   if (/#assistant/.test(location.hash)) {
-    setTimeout(function () { openPanel(/rdv/.test(location.hash) ? 'rdv' : null) }, 600)
+    setTimeout(function () { openPanel(/rdv/.test(location.hash) ? 'Je souhaite prendre un rendez-vous.' : null) }, 600)
   }
 
   /* ═══════════════════ FORMULAIRE DE CONTACT ═══════════════════ */
