@@ -291,7 +291,7 @@ window.DS_CONFIG = {
     greeted = true
     botSay(
       'Bonjour ! Je suis l’assistant <strong>D&amp;S Intelligence</strong>.<br>Posez-moi votre question, je vous réponds tout de suite.',
-      ['Prendre rendez-vous', 'Vos services', 'Vos tarifs', 'Parler à un humain'],
+      ['Prendre rendez-vous', 'Vos services', 'Vos tarifs', 'Automatiser une tâche'],
       600
     )
   }
