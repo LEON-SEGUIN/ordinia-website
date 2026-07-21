@@ -724,15 +724,16 @@
       /* Softer tap feedback on touch */
       a, button { -webkit-tap-highlight-color: transparent; }
 
-      /* ── HERO — one calm, centered block: headline, pitch, two CTAs.
-             The label and trust line are desktop-only; on a phone they
-             read as clutter, so the first screen keeps a single message ── */
+      /* ── HERO — top-to-bottom filled block: eyebrow badge, headline,
+             pitch, two CTAs, trust line. The network mark rises into the
+             top zone as a felt brand presence instead of a faint sliver,
+             so the first screen reads as composed rather than floating ── */
       #hero-section {
         min-height: 100vh !important;   /* fallback */
         min-height: 100svh !important;  /* exclude mobile browser chrome */
         overflow: hidden !important;
         align-items: stretch !important;
-        padding: 66px 22px 92px !important;
+        padding: 76px 22px 74px !important;
       }
       #hero-content {
         display: flex !important;
@@ -740,35 +741,69 @@
         justify-content: center !important;
         min-height: 100%;
       }
-      #hero-label, #hero-trust { display: none !important; }
+
+      /* Eyebrow becomes a compact glass pill with a live gradient dot —
+         anchors the top of the block and signals the positioning at a glance */
+      #hero-label {
+        display: inline-flex !important;
+        align-items: center; gap: 9px;
+        align-self: flex-start;
+        margin-bottom: 26px !important;
+        padding: 7px 14px 7px 13px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.72);
+        -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+        box-shadow: 0 6px 18px -12px rgba(106,92,255,0.4);
+        font-size: 9.5px !important; letter-spacing: 0.17em !important;
+        color: var(--text) !important;
+        white-space: nowrap;
+      }
+      #hero-label::before {
+        content: ''; width: 7px; height: 7px; border-radius: 50%;
+        background: var(--grad); flex-shrink: 0;
+        box-shadow: 0 0 0 3px rgba(106,92,255,0.14);
+      }
+
+      /* Network mark lifts into the empty top zone and grows to a real
+         centerpiece; its built-in bottom fade keeps the headline legible */
       .rings-float {
-        width: min(74vw, 280px) !important; height: min(74vw, 280px) !important;
-        top: 20vh !important; right: -8% !important; opacity: 0.42 !important;
+        width: min(98vw, 430px) !important; height: min(98vw, 430px) !important;
+        top: -1vh !important; right: -13% !important; opacity: 0.52 !important;
       }
       #hero-h1 {
-        font-size: clamp(1.75rem, 7.9vw, 2.2rem) !important;
-        line-height: 1.12 !important; letter-spacing: -0.025em !important;
-        max-width: 100% !important; margin-bottom: 22px !important;
+        font-size: clamp(2rem, 8.7vw, 2.55rem) !important;
+        line-height: 1.08 !important; letter-spacing: -0.032em !important;
+        max-width: 100% !important; margin-bottom: 24px !important;
       }
       #hero-h1 .overflow-clip,
       #hero-h1 .reveal-line { white-space: normal !important; }
       #hero-sub {
-        font-size: 1rem !important; line-height: 1.65 !important;
+        font-size: 1.04rem !important; line-height: 1.62 !important;
         max-width: 100% !important; margin-bottom: 0 !important;
       }
       .hero-ctas {
         flex-direction: column !important; align-items: stretch !important;
         gap: 11px !important; width: 100% !important;
-        margin-top: 40px !important;
+        margin-top: 32px !important;
       }
       .hero-ctas a {
         justify-content: center !important; width: 100% !important;
         box-sizing: border-box !important; text-align: center !important;
-        padding: 15px 24px !important;
+        padding: 16px 24px !important;
       }
+
+      /* Trust line returns on mobile to anchor the bottom of the block and
+         carry a quiet security signal under the CTAs */
+      #hero-trust {
+        display: flex !important;
+        justify-content: flex-start !important;
+        margin-top: 24px !important;
+      }
+
       /* Scroll cue — "Défiler" + fading line, anchored at the bottom of
          the first screen to invite scrolling toward the counter */
-      #scroll-cue { display: flex !important; bottom: 26px !important; }
+      #scroll-cue { display: flex !important; bottom: 20px !important; }
 
       /* ── STATS — tight, hairline-divided stack ──────────────────── */
       #stats     { padding: 4px 22px !important; }
@@ -1110,7 +1145,7 @@
     <div id="hero-content" style="max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1">
 
       <p class="label will-reveal" id="hero-label" style="margin-bottom:36px">
-        D&S Intelligence&nbsp;&nbsp;<span style="color:var(--accent)">/</span>&nbsp;&nbsp;Systèmes Agentiques
+        <span class="m-hide">D&S Intelligence&nbsp;&nbsp;<span style="color:var(--accent)">/</span>&nbsp;&nbsp;Systèmes Agentiques</span><span class="m-only">Systèmes IA sur-mesure</span>
       </p>
 
       <h1 class="h-display" id="hero-h1"
