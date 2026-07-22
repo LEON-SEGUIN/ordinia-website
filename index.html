@@ -246,6 +246,11 @@
     .btn-ghost:hover  { border-color: var(--muted); }
     .btn-ghost:active { transform: scale(0.975); }
     .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    /* Ghost CTAs on the light aurora — dark outline so they read clearly */
+    #contact .btn-ghost,
+    #hero-ctas .btn-ghost { border-color: var(--text); }
+    #contact .btn-ghost:hover,
+    #hero-ctas .btn-ghost:hover { border-color: var(--accent); }
 
     /* ── Nav link ────────────────────────────────────── */
     .nav-link {
