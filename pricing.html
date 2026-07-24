@@ -1696,19 +1696,58 @@
       var phi = i * Math.PI * (3 - Math.sqrt(5))
       base.push({ x: Math.cos(phi) * rr, y: y, z: Math.sin(phi) * rr })
     }
-    /* Arêtes : chaque nœud relié à ses 3 plus proches voisins */
-    var edges = [], eset = {}
-    for (var a = 0; a < N; a++){
-      var ds = []
-      for (var b = 0; b < N; b++){ if (b === a) continue
-        var dx = base[a].x - base[b].x, dy = base[a].y - base[b].y, dz = base[a].z - base[b].z
-        ds.push([dx*dx + dy*dy + dz*dz, b]) }
-      ds.sort(function(u, v){ return u[0] - v[0] })
-      for (var j = 0; j < 3; j++){
-        var bb = ds[j][1], key = a < bb ? a + '_' + bb : bb + '_' + a
-        if (!eset[key]){ eset[key] = 1; edges.push([a, bb]) }
+    /* Arêtes : triangulation complète de la sphère (enveloppe convexe incrémentale).
+       Chaque nœud est relié à tous ses voisins naturels — le maillage est fermé,
+       sans trou ni nœud orphelin. */
+    var edges = (function(){
+      function sub(a, b){ return [a.x - b.x, a.y - b.y, a.z - b.z] }
+      function cross(u, v){ return [u[1]*v[2] - u[2]*v[1], u[2]*v[0] - u[0]*v[2], u[0]*v[1] - u[1]*v[0]] }
+      function dot(u, v){ return u[0]*v[0] + u[1]*v[1] + u[2]*v[2] }
+      function makeFace(a, b, c){
+        var n = cross(sub(base[b], base[a]), sub(base[c], base[a]))
+        return { v: [a, b, c], n: n }
       }
-    }
+      function visible(f, p){
+        return dot(f.n, sub(p, base[f.v[0]])) > 1e-10
+      }
+      /* Tétraèdre initial : 0, 1, 2 + premier point non coplanaire */
+      var f0 = makeFace(0, 1, 2), d = 3
+      while (d < N && Math.abs(dot(f0.n, sub(base[d], base[0]))) < 1e-10) d++
+      var faces = []
+      ;[[0,1,2,d],[0,1,d,2],[0,2,d,1],[1,2,d,0]].forEach(function(t){
+        var f = makeFace(t[0], t[1], t[2])
+        if (visible(f, base[t[3]])) f = makeFace(t[0], t[2], t[1])
+        faces.push(f)
+      })
+      /* Insertion des autres points : on retire les faces visibles et on
+         referme le trou par de nouvelles faces le long de l'horizon */
+      for (var i = 3; i < N; i++){
+        if (i === d) continue
+        var keep = [], dirs = {}
+        for (var k = 0; k < faces.length; k++){
+          var f = faces[k]
+          if (visible(f, base[i])){
+            for (var e = 0; e < 3; e++) dirs[f.v[e] + '_' + f.v[(e + 1) % 3]] = 1
+          } else keep.push(f)
+        }
+        for (var key in dirs){
+          var ab = key.split('_')
+          if (!dirs[ab[1] + '_' + ab[0]]) keep.push(makeFace(+ab[0], +ab[1], i))
+        }
+        faces = keep
+      }
+      /* Arêtes uniques extraites des faces */
+      var out = [], eset = {}
+      for (var m = 0; m < faces.length; m++){
+        var v = faces[m].v
+        for (var e2 = 0; e2 < 3; e2++){
+          var a2 = v[e2], b2 = v[(e2 + 1) % 3]
+          var k2 = a2 < b2 ? a2 + '_' + b2 : b2 + '_' + a2
+          if (!eset[k2]){ eset[k2] = 1; out.push([a2, b2]) }
+        }
+      }
+      return out
+    })()
     /* Impulsions de données qui circulent le long des arêtes */
     var pulses = []
     for (var q = 0; q < 7; q++) pulses.push({ e: (Math.random() * edges.length) | 0, t: Math.random(), s: 0.005 + Math.random() * 0.008 })
