@@ -6,24 +6,13 @@
   <title>D&S Intelligence — Systèmes Agentiques</title>
   <meta name="description" content="D&S Intelligence conçoit des systèmes agentiques sur mesure — agents IA et automatisations qui transforment vos workflows." />
 
+  <link rel="icon" type="image/png" sizes="32x32" href="brand_assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="brand_assets/favicon-64.png" />
+  <link rel="apple-touch-icon" href="brand_assets/favicon-180.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            heading: ['"Space Grotesk"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-            body:  ['Inter', 'sans-serif'],
-          },
-        },
-      },
-    }
-  </script>
 
   <style>
     /* ── Brand tokens ─────────────────────────────────── */
@@ -509,6 +498,10 @@
     /* ── Motion init states ──────────────────────────── */
     .will-reveal { opacity: 0; }
 
+    /* Perf : fige les animations CSS du hero quand il est hors écran.
+       Aucun effet visible — elles reprennent dès que le hero réapparaît. */
+    .anim-hold, .anim-hold * { animation-play-state: paused !important; }
+
     /* ── Reduced motion overrides ────────────────────── */
     @media (prefers-reduced-motion: reduce) {
       .ring-cw, .ring-ccw, .rings-float,
@@ -930,6 +923,13 @@
       transition: opacity 0.2s, transform 0.25s;
     }
   </style>
+
+  <!-- CSS Tailwind v3.4.17 précompilé — copie exacte du style que cdn.tailwindcss.com
+       générait à l'exécution pour cette page. Même cascade, zéro JS au chargement. -->
+  <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:"JetBrains Mono", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.overflow-clip{overflow:clip}.font-heading{font-family:"Space Grotesk", sans-serif}</style>
+
+  <!-- Préchargement de l'autre page pour une navigation instantanée -->
+  <link rel="prefetch" href="pricing.html" as="document" />
 </head>
 <body>
 
@@ -955,7 +955,7 @@
            opacity:0;transform:translateY(-16px)">
 
     <a href="#" style="display:flex;align-items:center" aria-label="D&S Intelligence — Accueil">
-      <img src="brand_assets/D%26S%20Intelligence%20logo%20transparent.png"
+      <img src="brand_assets/logo-transparent-250.png" width="773" height="250"
            alt="D&S Intelligence"
            style="height:72px;width:auto;transform-origin:left center" />
     </a>
@@ -1611,7 +1611,7 @@
     <div style="max-width:1200px;margin:0 auto;
          display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
 
-      <img src="brand_assets/D%26S%20Intelligence%20logo%20transparent.png"
+      <img src="brand_assets/logo-transparent-250.png" width="773" height="250"
            alt="D&S Intelligence"
            style="height:82px;width:auto;opacity:0.95" />
 
@@ -1675,8 +1675,12 @@
       { duration: 0.7, easing: OUT, delay: 0.2 }
     )
     const navbar = document.getElementById('navbar')
+    let navBorderOn = false
     window.addEventListener('scroll', () => {
-      navbar.style.borderBottomColor = window.scrollY > 50 ? 'var(--border)' : 'transparent'
+      const on = window.scrollY > 50
+      if (on === navBorderOn) return
+      navBorderOn = on
+      navbar.style.borderBottomColor = on ? 'var(--border)' : 'transparent'
     }, { passive: true })
 
     if (!noMotion) {
@@ -2083,6 +2087,16 @@
       menu.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeMenu()
       })
+    })()
+
+    /* ─── Perf : le hero (SVG réseau filtré + textes dégradés animés) coûte cher
+       à rasteriser en continu. Hors écran, on fige ses animations CSS. ─── */
+    ;(function() {
+      var hero = document.getElementById('hero-section')
+      if (!hero || !('IntersectionObserver' in window)) return
+      new IntersectionObserver(function(entries) {
+        entries.forEach(function(en) { hero.classList.toggle('anim-hold', !en.isIntersecting) })
+      }).observe(hero)
     })()
 
     /* ─── Custom cursor — spring-follow orb (vanilla, no Motion dependency) ─── */
